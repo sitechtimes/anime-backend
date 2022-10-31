@@ -14,6 +14,7 @@ class Query(
 #     pass
 
 schema = graphene.Schema(query=Query)
+# schema = graphene.Schema(query=Query, mutation=Mutation)
 
 
 
