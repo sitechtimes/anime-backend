@@ -1,5 +1,5 @@
 from django.contrib import admin
-from user.models import Category, Ingredient
+from user.models import UserAnime, User
 
-admin.site.register(Category)
-admin.site.register(Ingredient)
+admin.site.register(UserAnime)
+admin.site.register(User)

@@ -1,17 +1,25 @@
 from django.db import models
+from anime.models import Anime
 
-class Category(models.Model):
-    name = models.CharField(max_length=100)
 
-    def __str__(self):
-        return self.name
-
-class Ingredient(models.Model):
-    name = models.CharField(max_length=100)
+class UserAnime(models.Model):
+    anime = models.ForeignKey(Anime, on_delete=models.CASCADE)
     notes = models.TextField()
-    category = models.ForeignKey(
-        Category, related_name="ingredients", on_delete=models.CASCADE
+    currently_watching = models.BooleanField()
+    watchlist = models.BooleanField()
+    finished_anime = models.BooleanField()
+
+    # user = models.ForeignKey(
+    #    User, related_name="ingredients", on_delete=models.CASCADE
+    # )
+
+class User(models.Model):
+    user_name = models.CharField(max_length=100)
+    grade = models.IntegerField()
+    email = models.EmailField()
+    # profile_img = models.ImageField()     # need to add a media root for it to work(just search it)
+    user_anime = models.OneToOneField(
+        UserAnime,
+        on_delete=models.CASCADE,
     )
 
-    def __str__(self):
-        return self.name
