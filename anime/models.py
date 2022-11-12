@@ -31,3 +31,5 @@ class Anime(models.Model):
     anime_genre = models.ManyToManyField(Genre)
     anime_awards = models.ManyToManyField(AnimeAwards)
 
+
+

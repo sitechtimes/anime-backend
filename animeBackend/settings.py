@@ -44,7 +44,8 @@ INSTALLED_APPS = [
 ]
 
 GRAPHENE = {
-    "SCHEMA": "user.schema.schema"
+    # "SCHEMA": "user.schema.schema"
+    'SCHEMA': 'animeBackend.schema.schema'
 }
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
