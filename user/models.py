@@ -7,7 +7,7 @@ class UserAnime(models.Model):
     currently_watching = models.BooleanField()
     watchlist = models.BooleanField()
     finished_anime = models.BooleanField()
-    rating = models.IntegerField()
+    rating = models.IntegerField(null=True)
     # user = models.ForeignKey(
     #    User, related_name="ingredients", on_delete=models.CASCADE
     # )
