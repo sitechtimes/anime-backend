@@ -12,6 +12,8 @@ class UserAnime(models.Model):
     #    User, related_name="ingredients", on_delete=models.CASCADE
     # )
 
+    def __str__(self):
+        return self.anime
 class User(models.Model):
     user_name = models.CharField(max_length=100)
     grade = models.IntegerField()
@@ -20,4 +22,7 @@ class User(models.Model):
     user_anime = models.ManyToManyField(
         UserAnime
     )
+
+    def __str__(self):
+        return self.user_name
 
