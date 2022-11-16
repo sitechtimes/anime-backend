@@ -7,21 +7,23 @@ from.models import Anime, Genre, Awards, AnimeAwards
 class GenreNode(DjangoObjectType):
     class Meta:
         model = Genre
-        fields = ("__all__", )
+        filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
 
 
 class AwardsNode(DjangoObjectType):
     class Meta:
         model = Awards
-        fields = ("__all__", )
+        fields = "__all__"
+        filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
 
 
 class AnimeAwardsNode(DjangoObjectType):
     class Meta:
         model = AnimeAwards
-        fields = ("__all__", "anime_award_name")
+        fields = "__all__"
+        filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
 
 
@@ -29,7 +31,8 @@ class AnimeAwardsNode(DjangoObjectType):
 class AnimeNode(DjangoObjectType):
     class Meta:
         model = Anime
-        fields = ("__all__", "anime_genre", "anime_awards")
+        fields = "__all__"
+        filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
 
 

@@ -7,14 +7,20 @@ from.models import UserAnime, User
 class UserAnimeNode(DjangoObjectType):
     class Meta:
         model = UserAnime
-        fields = ("__all__", )
+        fields = "__all__"
+        filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
 
 
 class UserNode(DjangoObjectType):
     class Meta:
         model = User
-        fields = ("__all__", )
+        fields = "__all__"
+        filter_fields = [
+            "user_name",
+            "grade",
+            "email"
+        ]
         interfaces = (graphene.relay.Node,)
 
 

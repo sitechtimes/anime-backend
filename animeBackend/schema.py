@@ -1,8 +1,10 @@
 import graphene
 import user.schema
+import anime.schema
 
 class Query(
-    user.schema.Query, # Add your Query objects here
+    anime.schema.Query, # Add your Query objects here
+    user.schema.Query,
     graphene.ObjectType
 ):
     pass
