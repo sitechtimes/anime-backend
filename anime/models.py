@@ -10,6 +10,7 @@ class Genre(models.Model):
         return self.genre
 
 
+
 class Awards(models.Model):
     award_name = models.CharField(max_length=255)
     # award_img = models.ImageField() #search for more parameters
