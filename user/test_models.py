@@ -66,3 +66,8 @@ class testUserModel(TestCase):
         # self.assertEqual(self.anime.anime_genre.count(), 2)
         self.assertIsInstance(self.user_anime, UserAnime)
         self.assertEqual(self.user_anime.__str__(), self.anime)
+
+    def test_user(self):
+        self.assertIsInstance(self.user, User)
+        self.assertEqual(self.user.__str__(), "test username")
+        # self.assertEqual(self.user.grade, 11)

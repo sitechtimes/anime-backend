@@ -18,6 +18,7 @@ class User(models.Model):
     user_name = models.CharField(max_length=100)
     grade = models.IntegerField()
     email = models.EmailField()
+    # grade = models.CharField(max_length=100)
     # profile_img = models.ImageField()     # need to add a media root for it to work(just search it)
     user_anime = models.ManyToManyField(
         UserAnime
