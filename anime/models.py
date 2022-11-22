@@ -10,6 +10,7 @@ class Genre(models.Model):
         return self.genre
 
 
+
 class Awards(models.Model):
     award_name = models.CharField(max_length=255)
     # award_img = models.ImageField() #search for more parameters
@@ -25,7 +26,7 @@ class AnimeAwards(models.Model):
     anime_award_name = models.OneToOneField(Awards, on_delete=models.CASCADE, )
 
     def __str__(self):
-        self.anime_award_name
+        return self.anime_award_name
 
 
 class Anime(models.Model):
@@ -33,8 +34,8 @@ class Anime(models.Model):
     # picture = models.ImageField() #search for more parameters
     episodes = models.IntegerField()
     studio_name = models.CharField(max_length=255)
-    aired = models.BooleanField(null=True)
-    status = models.DateField()
+    status = models.BooleanField(null=True)
+    aired = models.DateField()
     seasons = models.IntegerField()
     summary = models.TextField()
     anime_genre = models.ManyToManyField(Genre)
