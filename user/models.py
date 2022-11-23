@@ -8,20 +8,22 @@ class UserAnime(models.Model):
     watchlist = models.BooleanField()
     finished_anime = models.BooleanField()
     rating = models.IntegerField(null=True)
-    # user = models.ForeignKey(
-    #    User, related_name="ingredients", on_delete=models.CASCADE
-    # )
 
-    def __str__(self):
-        return self.anime
+
+class AllUserAnime(models.Model):
+    all_user_anime = models.ManyToManyField(
+        UserAnime
+    )
+    # def __str__(self):
+    #     return self.anime
+
+
 class User(models.Model):
     user_name = models.CharField(max_length=100)
     grade = models.IntegerField()
     email = models.EmailField()
     # profile_img = models.ImageField()     # need to add a media root for it to work(just search it)
-    user_anime = models.ManyToManyField(
-        UserAnime
-    )
+    user_anime = models.OneToOneField(AllUserAnime, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.user_name

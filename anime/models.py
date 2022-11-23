@@ -19,14 +19,13 @@ class Awards(models.Model):
     def __str__(self):
         return self.award_name
 
-
 class AnimeAwards(models.Model):
     nominated_for_award = models.BooleanField()
     has_award = models.BooleanField()
     anime_award_name = models.OneToOneField(Awards, on_delete=models.CASCADE, )
 
-    def __str__(self):
-        return self.anime_award_name
+    # def __str__(self):
+    #     return self.anime_award_name
 
 
 class Anime(models.Model):
@@ -35,7 +34,7 @@ class Anime(models.Model):
     episodes = models.IntegerField()
     studio_name = models.CharField(max_length=255)
     status = models.BooleanField(null=True)
-    aired = models.DateField()
+    aired = models.DateField(null=True)
     seasons = models.IntegerField()
     summary = models.TextField()
     anime_genre = models.ManyToManyField(Genre)
