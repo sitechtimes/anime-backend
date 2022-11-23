@@ -24,8 +24,8 @@ class AnimeAwards(models.Model):
     has_award = models.BooleanField()
     anime_award_name = models.OneToOneField(Awards, on_delete=models.CASCADE, )
 
-    def __str__(self):
-        self.anime_award_name
+    # def __str__(self):
+    #     self.anime_award_name
 
 
 class Anime(models.Model):

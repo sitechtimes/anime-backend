@@ -5,7 +5,7 @@ from anime.models import Anime
 class UserAnime(models.Model):
     anime = models.ForeignKey(Anime, on_delete=models.CASCADE)
     currently_watching = models.BooleanField()
-    watchlist = models.BooleanField()
+    watchlist = models.BooleanField(null=True)
     finished_anime = models.BooleanField()
     rating = models.IntegerField(null=True)
     # user = models.ForeignKey(
