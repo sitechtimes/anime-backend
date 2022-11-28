@@ -37,14 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "user",
+    "users",
     "anime",
     "graphene_django",
     "django_filters",
 ]
 
 GRAPHENE = {
-    # "SCHEMA": "user.schema.schema"
     'SCHEMA': 'animeBackend.schema.schema'
 }
 MIDDLEWARE = [
@@ -75,6 +74,9 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
 
 WSGI_APPLICATION = 'animeBackend.wsgi.application'
 
