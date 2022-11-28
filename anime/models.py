@@ -33,8 +33,8 @@ class Anime(models.Model):
     # picture = models.ImageField() #search for more parameters
     episodes = models.IntegerField()
     studio_name = models.CharField(max_length=255)
-    status = models.BooleanField(null=True)
-    aired = models.DateField(null=True)
+    # status = models.BooleanField(null=True)
+    # aired = models.DateField(null=True)
     seasons = models.IntegerField()
     summary = models.TextField()
     anime_genre = models.ManyToManyField(Genre)
