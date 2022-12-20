@@ -4,12 +4,17 @@ from django.db import models
 
 
 class Genre(models.Model):
-    genre = models.CharField(max_length=255)
+    genre = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.genre
 
 
+class Studio(models.Model):
+    studio = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.studio
 
 class Awards(models.Model):
     award_name = models.CharField(max_length=255)
@@ -31,13 +36,17 @@ class AnimeAwards(models.Model):
 
 class Anime(models.Model):
     anime_name = models.CharField(max_length=255)
-    # picture = models.ImageField() #search for more parameters
-    episodes = models.IntegerField()
-    studio_name = models.CharField(max_length=255)
-    status = models.BooleanField(null=True)
-    aired = models.DateField()
-    seasons = models.IntegerField()
-    summary = models.TextField()
+    media_type = models.CharField(max_length=255, null=True)
+    image_url = models.URLField(max_length=255, null=True)
+    small_image_url = models.URLField(max_length=255, null=True)
+    large_image_url = models.URLField(max_length=255, null=True)
+    trailer_youtube_url = models.URLField(max_length=255, null=True)
+    episodes = models.IntegerField(null=True)
+    status = models.CharField(max_length=255, null=True)
+    aired_from = models.DateField(null=True)
+    aired_to = models.DateField(null=True)
+    summary = models.TextField(null=True)
+    anime_studio = models.ManyToManyField(Studio)
     anime_genre = models.ManyToManyField(Genre)
     anime_awards = models.ManyToManyField(AnimeAwards)
 
