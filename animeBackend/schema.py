@@ -1,11 +1,13 @@
 import graphene
 import users.schema
 import anime.schema
+import history.schema
 
 
 class Query(
     anime.schema.Query, # Add your Query objects here
     users.schema.Query,
+    history.schema.Query,
     graphene.ObjectType
 ):
     pass

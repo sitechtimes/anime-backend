@@ -61,6 +61,27 @@ class CreateUser(graphene.Mutation):
 
         return CreateUser(user=user)
 
+# class CreateUserProfile(graphene.Mutation):
+#
+#     user_profile = graphene.Field( UserProfileNode)
+#
+#     class Arguments:
+#         username = graphene.String(required=True)
+#         email = graphene.String(required=True)
+#         password = graphene.String(required=True)
+#
+#     def mutate(self, info, username, password, email):
+#         user = get_user_model()(
+#             username= username,
+#             email=email,
+#             password=password
+#         )
+#         user.set_password(password)
+#         user.save()
+#
+#         return CreateUser(user=user)
+
+
 
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "users",
     "anime",
+    "history",
     "graphene_django",
     "django_filters",
 ]
