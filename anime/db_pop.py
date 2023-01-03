@@ -9,7 +9,7 @@ class DBPopulate():
         self.base_airing_api_url = "https://api.jikan.moe/v4/anime?status=airing"
         self.response = None
 
-    def addAnime(self, page_num: int = 1,):
+    def initialPopulation(self, page_num: int = 1,):
         api_url = f"{self.base_top_api_url}&page={page_num}"
         response = requests.get(api_url)
         self.response = response.json()
@@ -93,12 +93,6 @@ class DBPopulate():
 
     def updateAiringAnime(self):
 
-            our_airing_anime = set()
-            for anime in Anime.objects.filter(status="Currently Airing"):
-                our_airing_anime.add(anime.anime_name)
-            print(our_airing_anime)
-
-            their_airing_anime = set()
             api_url = f"{self.base_airing_api_url}"
             response = requests.get(api_url)
             response = response.json()
@@ -130,8 +124,6 @@ class DBPopulate():
                         my_anime_name = instance["title_english"]
                     else:
                         my_anime_name = instance["title"]
-
-                    their_airing_anime.add(my_anime_name)
 
                     try:
                         my_anime = Anime.objects.get(anime_name=my_anime_name)
@@ -204,4 +196,6 @@ class DBPopulate():
 
 DBPopulate = DBPopulate()
 
-DBPopulate.updateAiringAnime()
+for page_num in range(10):
+    DBPopulate.initialPopulation(page_num)
+    time.sleep(4)
