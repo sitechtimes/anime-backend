@@ -5,7 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 # import graphene
 from graphene_django.views import GraphQLView
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from socialLogin.views import GoogleLogin
 # from anime.schema import schema
 
@@ -13,4 +13,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("graphql/", GraphQLView.as_view(graphiql=True)),
     path('social-login/google/', GoogleLogin.as_view(), name='google_login'),
+    path('auth/', include('dj_rest_auth.urls')),
 ]
