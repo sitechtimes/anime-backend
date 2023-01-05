@@ -10,23 +10,23 @@ class DBPopulate():
         self.response = None
 
     def addAnime(self, anime_instance):
-        # if the rating is not school appropriate
-            # move on to the next anime, dont add it
-        if anime_instance["rating"] == "Rx - Hentai" or anime_instance["rating"] == "R+ - Mild Nudity":
-            print("not school appropriate")
-            return
-
-        # if the anime is not popular enough
-            # move on to the next anime, dont add it
-        if instance["members"] < 1000:
-            print("not enough members")
-            return
-
         # get anime title
         if anime_instance["title_english"] is not None:
             my_anime_name = anime_instance["title_english"]
         else:
             my_anime_name = anime_instance["title"]
+
+        # if the rating is not school appropriate
+            # move on to the next anime, dont add it
+        if anime_instance["rating"] == "Rx - Hentai" or anime_instance["rating"] == "R+ - Mild Nudity":
+            print(f"not school appropriate: {my_anime_name}")
+            return
+
+        # if the anime is not popular enough
+            # move on to the next anime, dont add it
+        if anime_instance["members"] < 1000:
+            print(f"not enough : {my_anime_name}")
+            return
 
         # get the date where the anime started airing, if any
         date = anime_instance["aired"]["prop"]["from"]
@@ -150,8 +150,8 @@ class DBPopulate():
                     self.addAnime(instance)
 
 
-# DBPopulate = DBPopulate()
-#
-# for page_num in range(10):
-#     DBPopulate.initialPopulation(page_num)
-#     time.sleep(4)
+DBPopulate = DBPopulate()
+
+for page_num in range(10):
+    DBPopulate.initialPopulation(page_num)
+    time.sleep(4)
