@@ -9,7 +9,7 @@ class DBPopulate():
         self.base_airing_api_url = "https://api.jikan.moe/v4/anime?status=airing"
         self.response = None
 
-    def addAnime(self, anime_instance):
+    def addAnime(self, anime_instance, airing_mode: bool=False):
         # get anime title
         if anime_instance["title_english"] is not None:
             my_anime_name = anime_instance["title_english"]
@@ -130,7 +130,7 @@ class DBPopulate():
         self.response = response.json()
 
         for instance in self.response["data"]: # instance is the anime
-            self.addAnime(instance)
+            self.addAnime(instance, True)
 
     def updateAiringAnime(self):
 
