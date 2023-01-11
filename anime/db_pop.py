@@ -1,5 +1,6 @@
 from anime.models import Anime, Genre, Studio
 import requests
+from requests.exceptions import HTTPError
 import datetime
 import time
 
@@ -10,6 +11,16 @@ class DBPopulate():
         self.our_airing_anime = set()
         self.their_airing_anime = set()
         self.response = None
+
+    def requestAPI(self, api_url):
+
+        try:
+            self.response = requests.get(api_url)
+            self.response = self.response.json()
+        except HTTPError as http_err:
+            raise HTTPError(f'HTTP error occurred: {http_err}')
+        except Exception as err:
+            raise Exception(f'Other error occurred: {err}')
 
     def addAnime(self, anime_instance: dict, airing_mode: bool = False):
         try:
@@ -95,29 +106,16 @@ class DBPopulate():
 
         # for every name in the genre list
         for genre_name in genre_list:
-            # try:
-            #     Genre.objects.get(genre=genre_name) # try and find a Genre object that matches the genre name
-            #     print(f"genre already exists: {genre_name}") # if it does exist just print that it already exists
-            # except Genre.DoesNotExist: # if it does not exist
-            #     # create a Genre object with that name and print that it was created
-            #     my_genre = Genre(
-            #         genre=genre_name
-            #     )
-            #     my_genre.save()
-            #     print(f"new genre created: {my_genre}")
-
-            if Genre.objects.get(genre=genre_name) is None: # if a Genre does not exist with the genre name
+            try:
+                Genre.objects.get(genre=genre_name) # try and find a Genre object that matches the genre name
+                print(f"genre already exists: {genre_name}") # if it does exist just print that it already exists
+            except Genre.DoesNotExist: # if it does not exist
                 # create a Genre object with that name and print that it was created
-                    my_genre = Genre(
-                        genre=genre_name
-                    )
-                    my_genre.save()
-            else: # if it does exist
-                print(f"genre already exists: {genre_name}")  # just print that it already exists
-
-            # associate the Genre object that has the name that we want with our Anime object
-            my_anime.anime_genre.add(Genre.objects.get(genre=genre_name))
-            my_anime.save()
+                my_genre = Genre(
+                    genre=genre_name
+                )
+                my_genre.save()
+                print(f"new genre created: {my_genre}")
 
         # create a list of the names of the anime's studios
         studio_list = []
@@ -144,29 +142,27 @@ class DBPopulate():
 
     def initialPopulation(self, page_num: int = 1,):
         api_url = f"{self.base_top_api_url}&page={page_num}"
-        response = requests.get(api_url)
-        self.response = response.json()
+        self.requestAPI(api_url)
 
         for instance in self.response["data"]: # instance is the anime
             self.addAnime(instance)
 
     def updateAiringAnime(self):
 
+        # get all the anime that we have that are airing
         self.our_airing_anime = set(Anime.objects.get(status="Currently Airing"))
 
         api_url = f"{self.base_airing_api_url}"
-        response = requests.get(api_url)
-        response = response.json()
+        self.requestAPI(api_url)
 
-        page_count = response["pagination"]["last_visible_page"]
+        page_count = self.response["pagination"]["last_visible_page"]
         for page_num in range(1, (page_count+1)):
             time.sleep(4)
 
             api_url = f"{self.base_airing_api_url}&page={page_num}"
-            response = requests.get(api_url)
-            response = response.json()
+            self.requestAPI(api_url)
 
-            for instance in response["data"]:
+            for instance in self.response["data"]:
                 self.addAnime(instance, airing_mode=True)
 
         wrong_anime = self.our_airing_anime.difference(self.their_airing_anime) # get the anime that are in our_airing_anime but not their_airing_anime
