@@ -1,6 +1,6 @@
 from django.db import models
 from anime.models import Anime
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, User
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -33,6 +33,21 @@ class UserProfile(models.Model):
 @receiver(post_save, sender=CustomUser)
 def create_user_customer(sender, instance, created, **kwargs):
     if created:
-        user = UserProfile.objects.get_or_create(user=instance, grade=12)
+        try:
+            print(instance.email)
+            index = instance.email.index("@")
+            print(index)
+            account = instance.email[index + 1:]
+            print(account)
+            if account == ("nycstudents.net" or "schools.nyc.gov"):
+                user = User.objects.get(email = instance.email)
+                print(user)
+                print("wassup")
+                # user.remove()
+                return 
+            else:
+                user = UserProfile.objects.get_or_create(user=instance, grade=12)
+        except Exception:
+            return
 
 post_save.connect(create_user_customer, sender=CustomUser)
