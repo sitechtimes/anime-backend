@@ -41,8 +41,8 @@ class DBPopulate():
 
             # if the anime is not popular enough
                 # move on to the next anime, don't add it
-            if anime_instance["members"] < 1000:
-                print(f"not enough members: {my_anime_name}")
+            if anime_instance["members"] < 5000:
+                print(f"not popular enough: {my_anime_name}")
                 return
 
             # get the date where the anime started airing, if any
@@ -117,6 +117,10 @@ class DBPopulate():
                 my_genre.save()
                 print(f"new genre created: {my_genre}")
 
+            # associate the Genre object that has the name that we want with our Anime object
+            my_anime.anime_genre.add(Genre.objects.get(genre=genre_name))
+            my_anime.save()
+
         # create a list of the names of the anime's studios
         studio_list = []
         for studio in anime_instance["studios"]:
@@ -127,7 +131,7 @@ class DBPopulate():
             try:
                 Studio.objects.get(studio=studio_name) # try and find a Studio object that matches the studio name
                 print(f"studio already exists: {studio_name}") # if it does exist, just print that it already exists
-            except: # if it does not exist
+            except Studio.DoesNotExist: # if it does not exist
                 # create a Studio object with that name and print that it was created
                 my_studio = Studio(
                     studio=studio_name
@@ -139,7 +143,6 @@ class DBPopulate():
             my_anime.anime_studio.add(Studio.objects.get(studio=studio_name))
             my_anime.save()
 
-
     def initialPopulation(self, page_num: int = 1,):
         api_url = f"{self.base_top_api_url}&page={page_num}"
         self.requestAPI(api_url)
@@ -150,7 +153,10 @@ class DBPopulate():
     def updateAiringAnime(self):
 
         # get all the anime that we have that are airing
-        self.our_airing_anime = set(Anime.objects.get(status="Currently Airing"))
+        try:
+            self.our_airing_anime = set(Anime.objects.filter(status="Currently Airing"))
+        except Anime.DoesNotExist:
+            print("no airing anime") # if there are none then just say so
 
         api_url = f"{self.base_airing_api_url}"
         self.requestAPI(api_url)
@@ -170,12 +176,14 @@ class DBPopulate():
         print(f"wrong_anime: {wrong_anime}")
 
         for anime in wrong_anime:
-            anime.status = "Finished Airing" # so just set the status to "Finished Airing"
+            anime.status = "Finished Airing"  # so just set the status to "Finished Airing"
             anime.save()
 
 
 DBPopulate = DBPopulate()
 
-for page_num in range(10):
-    DBPopulate.initialPopulation(page_num)
-    time.sleep(4)
+# for page_num in range(1,4):
+#     DBPopulate.initialPopulation(page_num)
+#     time.sleep(4)
+
+DBPopulate.updateAiringAnime()
