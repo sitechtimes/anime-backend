@@ -1,6 +1,8 @@
 from django.db import models
 from anime.models import Anime
 from django.contrib.auth.models import AbstractUser, User
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -17,7 +19,7 @@ class UserAnime(models.Model):
     # currently_watching = models.BooleanField()
     # watchlist = models.BooleanField()
     # finished_anime = models.BooleanField()
-    rating = models.IntegerField(null=True)
+    rating = models.IntegerField(null=True, default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     watching_status = models.CharField(max_length=20, choices=watching_status, default="NOT_WATCHING")
 
     # def __str__(self):
@@ -34,7 +36,7 @@ class CustomUser(AbstractUser):
 class UserProfile(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     # grade = models.IntegerField()
-    user_anime = models.ManyToManyField( UserAnime,related_name='taken', blank=True)
+    user_anime = models.ManyToManyField(UserAnime,related_name='taken', blank=True)
     # profile_img = models.ImageField()     # need to add a media root for it to work(just search it)
 
 
