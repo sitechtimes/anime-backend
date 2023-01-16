@@ -4,6 +4,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from django.contrib.auth import get_user_model
 from .models import UserAnime, CustomUser, UserProfile, Anime
 from anime.schema import AnimeNode
+from graphql import GraphQLError
 
 
 class UserAnimeNode(DjangoObjectType):
@@ -81,7 +82,10 @@ class addRating(graphene.Mutation):
         #     user = CustomUser.objects.create(email = "ps@pls.com", username = "sdcfgdfgwerdfs")
         # )
         # user.save()
+        
         if anime_data.rating:
+            if anime_data.rating > 10 or anime_data.rating < 0:
+                return GraphQLError("rating needs to be between 0-10")
             user_anime = UserAnime(
                 anime = anime,
                 rating = anime_data.rating
@@ -89,7 +93,9 @@ class addRating(graphene.Mutation):
             user_anime.save()
             user.user_anime.add(user_anime)
             user.save()
-        return addRating(user=user, user_anime=anime)
+        return addRating(user=user, user_anime=user_anime)
+    
+    
 # class addUserAnime(graphene.Mutation):
 #     class Arguments:
 #         user_data = userInput(required = True)
