@@ -49,41 +49,48 @@ class Query(object):
 
 class userInput(graphene.InputObjectType):
     email = graphene.String(required = True)
-    # user_id = graphene.ID()
+    user_id = graphene.ID()
     # username = graphene.String(required = True)
     
 class animeInput(graphene.InputObjectType):
-    anime_name = graphene.String(required = True)
+    # anime_name = graphene.String(required = True)
     rating = graphene.Int(required = True)
+    anime_id = graphene.ID(required = True)
     
 class addRating(graphene.Mutation):
     class Arguments:
         user_data = userInput(required = True)
         anime_data = animeInput(required = True)
     
-    anime = graphene.Field(UserAnimeNode)
+    # anime = graphene.Field(UserAnimeNode)
     user = graphene.Field(UserProfileNode)
+    # anime = graphene.Field(AnimeNode)
     
     @staticmethod
-    def get_anime(name):
-        return Anime.objects.get(anime_name = name)
+    def get_anime(id):
+        return Anime.objects.get(pk = id)
     
     @staticmethod
-    def get_user(email):
-        return UserProfile.objects.get(email = email)
+    def get_user(id):
+        return UserProfile.objects.get(pk = id)
     
     def mutate(self, info, user_data=None, anime_data=None):
-        anime = addRating.get_anime(anime_data.anime_name)
-        user = addRating.get_user(user_data.user_id)
-        if anime_data.rating:
-            user_anime = UserAnime(
-                anime = anime,
-                rating = anime_data.rating
-            )
-            user_anime.save()
-            user.user_anime.add(user_anime)
-            user.save()
-            return addRating(user=user, anime=user_anime)
+        # anime = addRating.get_anime(anime_data.anime_id)
+        # user = addRating.get_user(60)
+        user = UserProfile.objects.get(pk = 60)
+        # user = UserProfile.objects.create(
+        #     user = CustomUser.objects.create(email = "ps@pls.com", username = "sdcfgdfgwerdfs")
+        # )
+        # user.save()
+        # if anime_data.rating:
+        #     user_anime = UserAnime(
+        #         anime = anime,
+        #         rating = anime_data.rating
+        #     )
+        #     user_anime.save()
+        #     user.user_anime.add(user_anime)
+        #     user.save()
+        return addRating(user=user)
 # class addUserAnime(graphene.Mutation):
 #     class Arguments:
 #         user_data = userInput(required = True)
