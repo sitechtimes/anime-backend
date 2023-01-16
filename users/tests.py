@@ -13,5 +13,5 @@ class test_userProfile(TestCase):
         self.user.save()
         
     def test(self):
-        self.user1 = UserProfile.objects.get(id=1)
+        self.user1 = UserProfile.objects.get(email="test@d.com")
         print(self.user1.__dict__["_state"].__dict__)

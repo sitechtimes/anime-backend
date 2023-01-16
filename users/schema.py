@@ -64,7 +64,7 @@ class addRating(graphene.Mutation):
     
     # anime = graphene.Field(UserAnimeNode)
     user = graphene.Field(UserProfileNode)
-    # anime = graphene.Field(AnimeNode)
+    anime = graphene.Field(AnimeNode)
     
     @staticmethod
     def get_anime(id):
@@ -72,12 +72,11 @@ class addRating(graphene.Mutation):
     
     @staticmethod
     def get_user(id):
-        return UserProfile.objects.get(pk = id)
+        return UserProfile.objects.get(user_id = id)
     
     def mutate(self, info, user_data=None, anime_data=None):
-        # anime = addRating.get_anime(anime_data.anime_id)
-        # user = addRating.get_user(60)
-        user = UserProfile.objects.get(pk = 60)
+        anime = addRating.get_anime(anime_data.anime_id)
+        user = addRating.get_user(60)
         # user = UserProfile.objects.create(
         #     user = CustomUser.objects.create(email = "ps@pls.com", username = "sdcfgdfgwerdfs")
         # )
@@ -90,7 +89,7 @@ class addRating(graphene.Mutation):
         #     user_anime.save()
         #     user.user_anime.add(user_anime)
         #     user.save()
-        return addRating(user=user)
+        return addRating(user=user, anime=anime)
 # class addUserAnime(graphene.Mutation):
 #     class Arguments:
 #         user_data = userInput(required = True)
