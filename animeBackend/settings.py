@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "users",
     "anime",
-    "history",
     "graphene_django",
     "django_filters",
     

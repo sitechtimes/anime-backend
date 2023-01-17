@@ -38,7 +38,10 @@ class UserProfile(models.Model):
     # grade = models.IntegerField()
     user_anime = models.ManyToManyField(UserAnime,related_name='taken', blank=True)
     # profile_img = models.ImageField()     # need to add a media root for it to work(just search it)
-
+    # def __str__(self) -> str:
+    #     return user
+    def __str__(self):
+        return f"{self.user.username}"
 
 @receiver(post_save, sender=CustomUser)
 def create_user_customer(sender, instance, created, **kwargs):
