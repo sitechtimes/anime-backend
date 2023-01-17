@@ -24,14 +24,16 @@ class DBPopulate():
 
     def addAnime(self, anime_instance: dict, airing_mode: bool = False):
         try:
+
+            if airing_mode is True: # if this function was called from updateAiringAnime
+                my_mal_id = anime_instance["mal_id"] # get the MAL id of the anime
+                self.their_airing_anime.add(my_mal_id) # add the id to the their_airing_anime set
+
             # get anime title
             if anime_instance["title_english"] is not None:
                 my_anime_name = anime_instance["title_english"]
             else:
                 my_anime_name = anime_instance["title"]
-
-            if airing_mode is True: # if this function was called from updateAiringAnime
-                self.their_airing_anime.add(my_anime_name) # add the anime title to the their_airing_anime set
 
             # if the rating is not school appropriate
                 # move on to the next anime, don't add it
@@ -63,9 +65,10 @@ class DBPopulate():
             raise Exception(f"something in the special anime attributes didnt work: {err}")
 
         try:
-            my_anime = Anime.objects.get(anime_name=my_anime_name) # try finding a django Anime with the title of the anime
+            my_anime = Anime.objects.get(mal_id=anime_instance["mal_id"]) # try finding a django Anime with the MAL id of the anime
 
             # if it does exist, update all of its attributes to what the api says
+            my_anime.mal_id = anime_instance["mal_id"]
             my_anime.anime_name = my_anime_name
             my_anime.media_type = anime_instance["type"]
             my_anime.image_url = anime_instance["images"]["jpg"]["image_url"]
@@ -85,6 +88,7 @@ class DBPopulate():
 
             # create a new Anime with the attributes of the anime
             my_anime = Anime(
+                mal_id=anime_instance["mal_id"],
                 anime_name=my_anime_name,
                 media_type=anime_instance["type"],
                 image_url=anime_instance["images"]["jpg"]["image_url"],
@@ -154,9 +158,12 @@ class DBPopulate():
 
         # get all the anime that we have that are airing
         try:
-            self.our_airing_anime = set(Anime.objects.filter(status="Currently Airing"))
+            my_set = set(Anime.objects.filter(status="Currently Airing"))
+            for anime in my_set:
+                self.our_airing_anime.add(anime.mal_id)
+            print(f"our_airing_anime: {self.our_airing_anime}")
         except Anime.DoesNotExist:
-            print("no airing anime") # if there are none then just say so
+            print("our_airing_anime: none") # if there are none then just say so
 
         api_url = f"{self.base_airing_api_url}"
         self.requestAPI(api_url)
@@ -171,14 +178,18 @@ class DBPopulate():
             for instance in self.response["data"]:
                 self.addAnime(instance, airing_mode=True)
 
-        wrong_anime = self.our_airing_anime.difference(self.their_airing_anime) # get the anime that are in our_airing_anime but not their_airing_anime
-                                                                                # this means that they are not airing anymore and our info is outdated
+        print(f"our_airing_anime: {self.our_airing_anime}")
+        print(f"their_airing_anime: {self.their_airing_anime}")
+        wrong_anime = self.our_airing_anime.difference(self.their_airing_anime) # get the anime that are in our_airing_anime but not their_airing_anime                                                                      # this means that they are not airing anymore and our info is outdated
         print(f"wrong_anime: {wrong_anime}")
 
-        for anime in wrong_anime:
-            anime.status = "Finished Airing"  # so just set the status to "Finished Airing"
-            anime.save()
+        for id in wrong_anime:
+            my_anime = Anime.objects.get(mal_id=id)
+            my_anime.status = "Finished Airing"  # so just set the status to "Finished Airing"
+            my_anime.save()
 
+        self.our_airing_anime = None
+        self.their_airing_anime = None
 
 DBPopulate = DBPopulate()
 

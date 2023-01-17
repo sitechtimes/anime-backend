@@ -19,7 +19,6 @@ class Studio(models.Model):
 class Awards(models.Model):
     award_name = models.CharField(max_length=255)
     # award_img = models.ImageField() #search for more parameters
-    award_description = models.CharField(max_length=300)
 
     def __str__(self):
         return self.award_name
@@ -35,6 +34,7 @@ class AnimeAwards(models.Model):
 
 
 class Anime(models.Model):
+    mal_id = models.IntegerField(null=True)
     anime_name = models.CharField(max_length=255)
     media_type = models.CharField(max_length=255, null=True)
     image_url = models.URLField(max_length=255, null=True)
