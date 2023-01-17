@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Genre, Awards, AnimeAwards, Anime
+from anime.models import Genre, Awards, AnimeAwards, Anime
 import datetime
 # Create your tests here.
 
