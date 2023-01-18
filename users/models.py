@@ -19,7 +19,7 @@ class UserAnime(models.Model):
     # currently_watching = models.BooleanField()
     # watchlist = models.BooleanField()
     # finished_anime = models.BooleanField()
-    rating = models.IntegerField(null=True, default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
+    rating = models.IntegerField(null=True, validators=[MinValueValidator(0), MaxValueValidator(10)])
     watching_status = models.CharField(max_length=20, choices=watching_status, default="NOT_WATCHING")
 
     def __str__(self):

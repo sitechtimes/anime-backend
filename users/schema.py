@@ -22,13 +22,13 @@ class UserNode(DjangoObjectType):
         filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
 
+
 class UserProfileNode(DjangoObjectType):
     class Meta:
         model = UserProfile
         fields = "__all__"
         filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
-
 
 
 class Query(object):
@@ -42,62 +42,86 @@ class Query(object):
     all_users = DjangoFilterConnectionField(UserProfileNode)
 
 
-
-
-
-
-
-
 class userInput(graphene.InputObjectType):
     # email = graphene.String(required = True)
     user_id = graphene.ID()
     # username = graphene.String(required = True)
-    
+
+
 class animeInput(graphene.InputObjectType):
     # anime_name = graphene.String(required = True)
     rating = graphene.Int()
-    anime_id = graphene.ID(required = True)
+    anime_id = graphene.ID(required=True)
     watch_status = graphene.String()
+
 
 class userAnimeInput(graphene.InputObjectType):
     # user_anime_id = graphene.ID(required = True)
     rating = graphene.Int()
     watch_status = graphene.String()
-    anime_name = graphene.String(required = True)
+    anime_name = graphene.String(required=True)
+
 
 class addRating(graphene.Mutation):
     class Arguments:
-        user_data = userInput(required = True)
-        anime_data = animeInput(required = True)
-    
+        user_data = userInput(required=True)
+        anime_data = animeInput(required=True)
+
     user_anime = graphene.Field(UserAnimeNode)
     user = graphene.Field(UserProfileNode)
     # anime = graphene.Field(AnimeNode)
-    
+
     @staticmethod
     def get_anime(id):
-        return Anime.objects.get(pk = id)
-    
+        return Anime.objects.get(pk=id)
+
     @staticmethod
     def get_user(id):
-        return UserProfile.objects.get(user_id = id)
-    
+        return UserProfile.objects.get(user_id=id)
+
     def mutate(self, info, user_data=None, anime_data=None):
         anime = addRating.get_anime(anime_data.anime_id)
         user = addRating.get_user(user_data.user_id)
-        
+
+        initial_rating = anime.number_rating
+        user_anime = UserAnime.objects.filter(
+            anime__anime_name=anime.anime_name)
+
         # user = UserProfile.objects.create(
         #     user = CustomUser.objects.create(email = "ps@pls.com", username = "sdcfgdfgwerdfs")
         # )
         # user.save()
-        
-        if anime_data.rating:
+
+        if anime_data.rating and anime_data.watch_status:
             if anime_data.rating > 10 or anime_data.rating < 0:
-                return GraphQLError("rating needs to be between 0-10")
+                    return GraphQLError("rating needs to be between 0-10")
+            print(anime_data.rating)
             user_anime = UserAnime(
-                anime = anime,
-                rating = anime_data.rating
-            )
+                    anime = anime,
+                    rating = anime_data.rating,
+                    watching_status = anime_data.watch_status
+                )
+            user_anime.save()
+            user.user_anime.add(user_anime)
+            user.save()
+        
+        elif anime_data.rating:
+            if anime_data.rating > 10 or anime_data.rating < 0:
+                    return GraphQLError("rating needs to be between 0-10")
+            user_anime = UserAnime(
+                    anime = anime,
+                    rating = anime_data.rating,
+                    # watching_status = anime_data.watch_status
+                )
+            user_anime.save()
+            user.user_anime.add(user_anime)
+            user.save()
+        elif anime_data.watch_status:
+            user_anime = UserAnime(
+                    anime = anime,
+                    # rating = null,
+                    watching_status = anime_data.watch_status
+                )
             user_anime.save()
             user.user_anime.add(user_anime)
             user.save()
