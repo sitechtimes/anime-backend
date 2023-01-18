@@ -22,8 +22,8 @@ class UserAnime(models.Model):
     rating = models.IntegerField(null=True, default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     watching_status = models.CharField(max_length=20, choices=watching_status, default="NOT_WATCHING")
 
-    # def __str__(self):
-    #     return self.rating
+    def __str__(self):
+        return f"{self.anime.anime_name}"
 
 
 class CustomUser(AbstractUser):

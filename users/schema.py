@@ -112,8 +112,8 @@ class updateUserAnime(graphene.Mutation):
     # anime = graphene.Field(AnimeNode)
     
     @staticmethod
-    def get_anime(id):
-        return Anime.objects.get(pk = id)
+    def get_user_anime(id):
+        return UserAnime.objects.get(id = id)
     
     @staticmethod
     def get_user(id):
@@ -122,23 +122,15 @@ class updateUserAnime(graphene.Mutation):
     def mutate(self, info, user_data=None):
         # anime = addRating.get_anime(anime_data.anime_id)
         user = updateUserAnime.get_user(user_data.user_id)
+        user_anime = user.user_anime.get(anime__anime_name = "etst")
         
-        # user = UserProfile.objects.create(
-        #     user = CustomUser.objects.create(email = "ps@pls.com", username = "sdcfgdfgwerdfs")
-        # )
-        # user.save()
-        
-        # if anime_data.rating:
-        #     if anime_data.rating > 10 or anime_data.rating < 0:
-        #         return GraphQLError("rating needs to be between 0-10")
-        #     user_anime = UserAnime(
-        #         anime = anime,
-        #         rating = anime_data.rating
-        #     )
-        #     user_anime.save()
-        #     user.user_anime.add(user_anime)
-        #     user.save()
-        return updateUserAnime(user=user) 
+        # if user_anime == "":
+        #     return GraphQLError("User anime does not exit")
+        # user_anime = UserAnime.objects.filter(user_set__name = "johnson")
+        print(user_anime)
+        # print(UserAnime.objects.filter(anime_id = 1))
+ 
+        return updateUserAnime(user=user, user_anime=user_anime) 
     
 # class updateUserAnime(graphene.Mutation):
 #     class Arguments:
