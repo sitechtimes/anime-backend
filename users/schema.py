@@ -63,6 +63,7 @@ class userAnimeInput(graphene.InputObjectType):
     # user_anime_id = graphene.ID(required = True)
     rating = graphene.Int()
     watch_status = graphene.String()
+    anime_name = graphene.String(required = True)
 
 class addRating(graphene.Mutation):
     class Arguments:
@@ -102,27 +103,38 @@ class addRating(graphene.Mutation):
             user.save()
         return addRating(user=user, user_anime=user_anime)
 
+
+
+
 class updateUserAnime(graphene.Mutation):
     class Arguments:
         user_data = userInput(required = True)
-        # anime_data = animeInput(required = True)
+        user_anime_data = userAnimeInput(required = True)
     
     user_anime = graphene.Field(UserAnimeNode)
     user = graphene.Field(UserProfileNode)
     # anime = graphene.Field(AnimeNode)
     
-    @staticmethod
-    def get_user_anime(id):
-        return UserAnime.objects.get(id = id)
+    # @staticmethod
+    # def get_user_anime(id):
+    #     return UserAnime.objects.get(id = id)
     
     @staticmethod
     def get_user(id):
         return UserProfile.objects.get(user_id = id)
     
-    def mutate(self, info, user_data=None):
+    def mutate(self, info, user_data=None, user_anime_data=None):
         # anime = addRating.get_anime(anime_data.anime_id)
         user = updateUserAnime.get_user(user_data.user_id)
-        user_anime = user.user_anime.get(anime__anime_name = "etst")
+        user_anime = user.user_anime.get(anime__anime_name = user_anime_data.anime_name)
+        
+        if user_anime_data.rating:
+            user_anime.rating = user_anime_data.rating
+        
+        if user_anime_data.watch_status:
+            user_anime.watching_status = user_anime_data.watch_status
+            
+        user_anime.save()
         
         # if user_anime == "":
         #     return GraphQLError("User anime does not exit")
