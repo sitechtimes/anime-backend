@@ -83,10 +83,6 @@ class addRating(graphene.Mutation):
         anime = addRating.get_anime(anime_data.anime_id)
         user = addRating.get_user(user_data.user_id)
 
-        initial_rating = anime.number_rating
-        user_anime = UserAnime.objects.filter(
-            anime__anime_name=anime.anime_name)
-
         # user = UserProfile.objects.create(
         #     user = CustomUser.objects.create(email = "ps@pls.com", username = "sdcfgdfgwerdfs")
         # )
@@ -104,7 +100,11 @@ class addRating(graphene.Mutation):
             user_anime.save()
             user.user_anime.add(user_anime)
             user.save()
-        
+            initial_rating = anime.number_rating
+            rating_number = initial_rating + 1
+            anime.number_rating = rating_number
+            anime.save()
+            print(anime.number_rating)
         elif anime_data.rating:
             if anime_data.rating > 10 or anime_data.rating < 0:
                     return GraphQLError("rating needs to be between 0-10")
@@ -116,6 +116,11 @@ class addRating(graphene.Mutation):
             user_anime.save()
             user.user_anime.add(user_anime)
             user.save()
+            initial_rating = anime.number_rating
+            rating_number = initial_rating + 1
+            anime.number_rating = rating_number
+            anime.save()
+            print(anime.number_rating)
         elif anime_data.watch_status:
             user_anime = UserAnime(
                     anime = anime,
