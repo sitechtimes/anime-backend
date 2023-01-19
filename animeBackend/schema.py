@@ -9,14 +9,13 @@ class Query(
 ):
     pass
 
-# class Mutation(
-#     my_app.schema.Mutation, # Add your Mutation objects here
-#     graphene.ObjectType
-# ):
-#     pass
+class Mutation(
+    anime.schema.Mutation, # Add your Mutation objects here
+    graphene.ObjectType
+):
+    pass
 
-schema = graphene.Schema(query=Query)
-# schema = graphene.Schema(query=Query, mutation=Mutation)
+schema = graphene.Schema(query=Query, mutation=Mutation)
 
 
 

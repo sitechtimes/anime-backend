@@ -21,16 +21,20 @@ class Awards(models.Model):
     # award_img = models.ImageField() #search for more parameters
 
     def __str__(self):
+
         return self.award_name
 
 
 class AnimeAwards(models.Model):
     nominated_for_award = models.BooleanField()
+    nominated_date = models.DateField(null=True)
     has_award = models.BooleanField()
+    received_date = models.DateField(null=True)
     anime_award_name = models.OneToOneField(Awards, on_delete=models.CASCADE, )
 
+
     def __str__(self):
-        return self.anime_award_name
+        return self.anime_award_name.award_name
 
 
 class Anime(models.Model):
