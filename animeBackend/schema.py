@@ -15,7 +15,9 @@ class Query(
 
 class Mutation(
     users.schema.Mutation,
+    anime.schema.Mutation,
     graphene.ObjectType
+
 ):
 
     pass

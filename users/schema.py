@@ -49,7 +49,7 @@ class userInput(graphene.InputObjectType):
 
 
 class animeInput(graphene.InputObjectType):
-    # anime_name = graphene.String(required = True)
+    anime_name = graphene.String()
     rating = graphene.Int()
     anime_id = graphene.ID(required=True)
     watch_status = graphene.String()

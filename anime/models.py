@@ -1,4 +1,6 @@
 from django.db import models
+# from users.models import CustomUser
+from django.conf import settings
 
 # Create your models here.
 
@@ -53,3 +55,7 @@ class Anime(models.Model):
     def __str__(self):
         return self.anime_name
 
+class Vote(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    anime = models.ForeignKey(Anime, on_delete=models.CASCADE)
+    award =  models.ForeignKey(Awards, on_delete=models.CASCADE)
