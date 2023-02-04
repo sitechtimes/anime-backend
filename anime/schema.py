@@ -124,9 +124,9 @@ class addVote(graphene.Mutation):
             print("This is the award:", anime_award)
             if anime_award:
                 print("Anime exists")
-                if user in anime_award.allUsers.all():
-                    print("user already voted for this anime for this award")
-                    return GraphQLError("user already voted for this anime for this award")
+                # if user in anime_award.allUsers.all():
+                #     print("user already voted for this anime for this award")
+                #     return GraphQLError("user already voted for this anime for this award")
                 anime_award.vote_count += 1
                 anime_award.allUsers.add(user)
                 anime_award.save()
