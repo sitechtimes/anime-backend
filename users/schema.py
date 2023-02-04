@@ -2,8 +2,8 @@ from graphene_django import DjangoObjectType
 import graphene
 from graphene_django.filter import DjangoFilterConnectionField
 from django.contrib.auth import get_user_model
-from .models import UserAnime, CustomUser, UserProfile, Anime
-from anime.schema import AnimeNode
+from .models import UserAnime, CustomUser, UserProfile
+from anime.schema import AnimeNode, Anime
 from graphql import GraphQLError
 
 

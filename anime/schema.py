@@ -1,7 +1,8 @@
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-from .models import Anime, Genre, Awards, AnimeAwards, Vote
+from anime.models import Anime, Genre, Awards, AnimeAwards
+from users.models import UserProfile
 # from users.models import CustomUser
 from django.conf import settings
 
@@ -39,12 +40,12 @@ class AnimeNode(DjangoObjectType):
         filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
 
-class VoteNode(DjangoObjectType):
-    class Meta:
-        model = Vote
-        fields = "__all__"
-        filter_fields = "__all__"
-        interfaces = (graphene.relay.Node,)
+# class VoteNode(DjangoObjectType):
+#     class Meta:
+#         model = Vote
+#         fields = "__all__"
+#         filter_fields = "__all__"
+#         interfaces = (graphene.relay.Node,)
 
 class Query(object):
     genre = graphene.relay.Node.Field(GenreNode)
@@ -59,8 +60,11 @@ class Query(object):
     anime = graphene.relay.Node.Field(AnimeNode)
     all_anime = DjangoFilterConnectionField(AnimeNode)
 
-    vote = graphene.relay.Node.Field(VoteNode)
-    all_vote = DjangoFilterConnectionField(VoteNode)
+    # vote = graphene.relay.Node.Field(VoteNode)
+    # all_vote = DjangoFilterConnectionField(VoteNode)
+    
+    
+    
 class userInput(graphene.InputObjectType):
     # email = graphene.String(required = True)
     user_id = graphene.ID()
@@ -73,6 +77,8 @@ class animeInput(graphene.InputObjectType):
     anime_id = graphene.ID(required=True)
     watch_status = graphene.String()
 
+# class awardInput(graphene.InputObjectType):
+#     award_name = graphene.String()
 
 class addVote(graphene.Mutation):
     class Arguments:
@@ -80,7 +86,7 @@ class addVote(graphene.Mutation):
         anime_data = animeInput(required = True)
         award_name = graphene.String(required = True)
     
-    vote = graphene.Field(VoteNode)
+    # vote = graphene.Field(VoteNode)
     # user = graphene.Field(UserProfileNode)
     # anime = graphene.Field(AnimeNode)
     
@@ -90,28 +96,59 @@ class addVote(graphene.Mutation):
     
     @staticmethod
     def get_user(id):
-        return settings.AUTH_USER_MODEL.objects.get(user_id = id)
+        return UserProfile.objects.get(user_id = id)
+    
+    @staticmethod
+    def get_anime(name):
+        return Anime.objects.get(anime_name = name)
+    
+    @staticmethod
+    def get_award(name):
+        return Awards.objects.get(award_name = name)
     
     def mutate(self, info, user_data=None, anime_data=None, award_name=None):
-        # anime = addRating.get_anime(anime_data.anime_id)
-        user = addVote.get_user(user_data.user_id)
-        anime = Anime.objects.get(anime_name = anime_data.anime_name)
+        
+        return addVote() 
+    
 
-        vote = Vote(
-            user = user,
-            anime = anime,
-            award = award_name
-        )
+# class addVote(graphene.Mutation):
+#     class Arguments:
+#         user_data = userInput(required = True)
+#         anime_data = animeInput(required = True)
+#         award_name = graphene.String(required = True)
+    
+#     vote = graphene.Field(VoteNode)
+#     # user = graphene.Field(UserProfileNode)
+#     # anime = graphene.Field(AnimeNode)
+    
+#     # @staticmethod
+#     # def get_user_anime(id):
+#     #     return UserAnime.objects.get(id = id)
+    
+#     @staticmethod
+#     def get_user(id):
+#         return settings.AUTH_USER_MODEL.objects.get(user_id = id)
+    
+#     def mutate(self, info, user_data=None, anime_data=None, award_name=None):
+#         # anime = addRating.get_anime(anime_data.anime_id)
+#         user = addVote.get_user(user_data.user_id)
+#         anime = Anime.objects.get(anime_name = anime_data.anime_name)
 
-        vote.save()
+#         vote = Vote(
+#             user = user,
+#             anime = anime,
+#             award = award_name
+#         )
+
+#         vote.save()
 
         
-        # if user_anime == "":
-        #     return GraphQLError("User anime does not exit")
-        # user_anime = UserAnime.objects.filter(user_set__name = "johnson")
-        # print(UserAnime.objects.filter(anime_id = 1))
+#         # if user_anime == "":
+#         #     return GraphQLError("User anime does not exit")
+#         # user_anime = UserAnime.objects.filter(user_set__name = "johnson")
+#         # print(UserAnime.objects.filter(anime_id = 1))
  
-        return addVote(vote=vote) 
+#         return addVote(vote=vote) 
     
 class Mutation(graphene.ObjectType):
     add_vote = addVote.Field()
