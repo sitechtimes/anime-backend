@@ -63,6 +63,7 @@ class AnimeAwards(models.Model):
     award = models.ForeignKey(Awards, on_delete=models.CASCADE, blank=True, null=True)
     allUsers = models.ManyToManyField("users.UserProfile")
     
+ 
 # class Vote(models.Model):
 #     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 #     anime = models.ForeignKey(Anime, on_delete=models.CASCADE)

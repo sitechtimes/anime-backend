@@ -74,7 +74,7 @@ class userInput(graphene.InputObjectType):
 class animeInput(graphene.InputObjectType):
     anime_name = graphene.String()
     rating = graphene.Int()
-    anime_id = graphene.ID(required=True)
+    anime_id = graphene.ID()
     watch_status = graphene.String()
 
 # class awardInput(graphene.InputObjectType):
@@ -86,13 +86,7 @@ class addVote(graphene.Mutation):
         anime_data = animeInput(required = True)
         award_name = graphene.String(required = True)
     
-    # vote = graphene.Field(VoteNode)
-    # user = graphene.Field(UserProfileNode)
-    # anime = graphene.Field(AnimeNode)
-    
-    # @staticmethod
-    # def get_user_anime(id):
-    #     return UserAnime.objects.get(id = id)
+    anime_award = graphene.Field(AnimeAwardsNode)
     
     @staticmethod
     def get_user(id):
@@ -107,8 +101,31 @@ class addVote(graphene.Mutation):
         return Awards.objects.get(award_name = name)
     
     def mutate(self, info, user_data=None, anime_data=None, award_name=None):
-        
-        return addVote() 
+        user = addVote.get_user(user_data.user_id)
+        anime = addVote.get_anime(anime_data.anime_name)
+        award = addVote.get_award(award_name)
+        print(user, anime, award)
+        print("hi")
+        try:
+            print("dfg")
+            anime_award = AnimeAwards.objects.get(anime__anime_name = anime_data.anime_name, award__award_name = award_name)
+            print("This is the award:", anime_award)
+            if anime_award:
+                print("Anime exists")
+                anime_award.vote_count += 1
+                anime_award.save()
+            
+        except AnimeAwards.DoesNotExist:
+            print("Anime Award does not exist and will now be created")
+            anime_award = AnimeAwards(
+                vote_count = 1,
+                anime = anime,
+                award = award,
+            )
+            # anime_award.allUsers.add(user)
+            anime_award.save()
+            print(anime_award)
+        return addVote(anime_award = anime_award) 
     
 
 # class addVote(graphene.Mutation):
