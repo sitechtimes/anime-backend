@@ -5,6 +5,7 @@ from anime.models import Anime, Genre, Awards, AnimeAwards
 from users.models import UserProfile
 # from users.models import CustomUser
 from django.conf import settings
+from graphql import GraphQLError
 
 # from users.schema import animeInput, userInput
 
@@ -107,12 +108,26 @@ class addVote(graphene.Mutation):
         print(user, anime, award)
         print("hi")
         try:
-            print("dfg")
+            try:
+                all_anime_awards = AnimeAwards.objects.filter(award__award_name = award_name)
+                print(all_anime_awards)
+                user_exist = all_anime_awards.filter(allUsers = user)
+                print(user_exist)
+                if user_exist:
+                    print("user already voted for this award")
+                
+            except Exception:
+                print("there was an error ")
+            
             anime_award = AnimeAwards.objects.get(anime__anime_name = anime_data.anime_name, award__award_name = award_name)
             print("This is the award:", anime_award)
             if anime_award:
                 print("Anime exists")
+                if user in anime_award.allUsers.all():
+                    print("user already voted for this anime for this award")
+                    return GraphQLError("user already voted for this anime for this award")
                 anime_award.vote_count += 1
+                anime_award.allUsers.add(user)
                 anime_award.save()
             
         except AnimeAwards.DoesNotExist:
@@ -124,48 +139,12 @@ class addVote(graphene.Mutation):
             )
             # anime_award.allUsers.add(user)
             anime_award.save()
+            anime_award.allUsers.add(user)
+            anime_award.save()
             print(anime_award)
         return addVote(anime_award = anime_award) 
     
 
-# class addVote(graphene.Mutation):
-#     class Arguments:
-#         user_data = userInput(required = True)
-#         anime_data = animeInput(required = True)
-#         award_name = graphene.String(required = True)
-    
-#     vote = graphene.Field(VoteNode)
-#     # user = graphene.Field(UserProfileNode)
-#     # anime = graphene.Field(AnimeNode)
-    
-#     # @staticmethod
-#     # def get_user_anime(id):
-#     #     return UserAnime.objects.get(id = id)
-    
-#     @staticmethod
-#     def get_user(id):
-#         return settings.AUTH_USER_MODEL.objects.get(user_id = id)
-    
-#     def mutate(self, info, user_data=None, anime_data=None, award_name=None):
-#         # anime = addRating.get_anime(anime_data.anime_id)
-#         user = addVote.get_user(user_data.user_id)
-#         anime = Anime.objects.get(anime_name = anime_data.anime_name)
-
-#         vote = Vote(
-#             user = user,
-#             anime = anime,
-#             award = award_name
-#         )
-
-#         vote.save()
-
-        
-#         # if user_anime == "":
-#         #     return GraphQLError("User anime does not exit")
-#         # user_anime = UserAnime.objects.filter(user_set__name = "johnson")
-#         # print(UserAnime.objects.filter(anime_id = 1))
- 
-#         return addVote(vote=vote) 
     
 class Mutation(graphene.ObjectType):
     add_vote = addVote.Field()
