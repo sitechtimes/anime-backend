@@ -115,6 +115,7 @@ class addVote(graphene.Mutation):
                 print(user_exist)
                 if user_exist:
                     print("user already voted for this award")
+                    return GraphQLError("user already voted for this award")
                 
             except Exception:
                 print("there was an error ")
