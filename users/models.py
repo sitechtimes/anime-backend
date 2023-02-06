@@ -38,7 +38,7 @@ class UserVotedAnime(models.Model):
 class UserProfile(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     # grade = models.IntegerField()
-    user_voted_animes = models.ForeignKey(UserVotedAnime,on_delete=models.CASCADE, null=True, blank=True)
+    user_voted_animes = models.ManyToManyField("anime.AnimeAwards",  blank=True)
     user_anime = models.ManyToManyField(UserAnime,related_name='taken', blank=True)
     # profile_img = models.ImageField()     # need to add a media root for it to work(just search it)
     # def __str__(self) -> str:
