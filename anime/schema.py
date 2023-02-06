@@ -130,6 +130,8 @@ class addVote(graphene.Mutation):
                 anime_award.vote_count += 1
                 anime_award.allUsers.add(user)
                 anime_award.save()
+                user.user_voted_animes.add(anime_award)
+                user.save()
             
         except AnimeAwards.DoesNotExist:
             print("Anime Award does not exist and will now be created")
@@ -142,6 +144,8 @@ class addVote(graphene.Mutation):
             anime_award.save()
             anime_award.allUsers.add(user)
             anime_award.save()
+            user.user_voted_animes.add(anime_award)
+            user.save()
             print(anime_award)
         return addVote(anime_award = anime_award) 
     
