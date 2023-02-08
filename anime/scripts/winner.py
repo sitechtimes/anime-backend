@@ -24,16 +24,41 @@ def determine_winner():
     for anime_award in anime_awards:
         try:
             all_anime_awards = AnimeAwards.objects.filter(award__award_name = anime_award)
-            highest_vote_count = max(all_anime_awards, key=lambda y: y.vote_count)
+            highest_vote_count = max(all_anime_awards, key=lambda y: y.vote_count).vote_count
             print(highest_vote_count)
             
-            anime_name = highest_vote_count.anime.anime_name
-            award_name = highest_vote_count.award.award_name
-            anime = Anime.objects.get(anime_name = anime_name)
-            award = Awards.objects.get(award_name = award_name)
-            anime.anime_awards.add(award)
-            anime.save()
-            print(anime)
+            filtered_anime_awards = all_anime_awards.filter(vote_count = highest_vote_count)
+            print(len(filtered_anime_awards))
+            for filtered_anime_award in filtered_anime_awards:
+                filtered_anime_name = filtered_anime_award.anime.anime_name
+                filtered_award_name = filtered_anime_award.award.award_name
+                filtered_anime = Anime.objects.get(anime_name = filtered_anime_name)
+                filtered_award = Awards.objects.get(award_name = filtered_award_name)
+                filtered_anime.anime_awards.add(filtered_award)
+                filtered_anime.save()
+                print(filtered_anime)
+            
+                
+                
+                
+                
+            # if len(filtered_anime_awards) > 1:
+            #     for filtered_anime_award in filtered_anime_awards:
+            #         filtered_anime_name = filtered_anime_award.anime.anime_name
+            #         filtered_award_name = filtered_anime_award.award.award_name
+            #         filtered_anime = Anime.objects.get(anime_name = filtered_anime_name)
+            #         filtered_award = Awards.objects.get(award_name = filtered_award_name)
+            #         filtered_anime.anime_awards.add(filtered_award)
+            #         filtered_anime.save()
+            #         print(filtered_anime)
+            # else:
+            #     anime_name = highest_vote_count.anime.anime_name
+            #     award_name = highest_vote_count.award.award_name
+            #     anime = Anime.objects.get(anime_name = anime_name)
+            #     award = Awards.objects.get(award_name = award_name)
+            #     anime.anime_awards.add(award)
+            #     anime.save()
+            #     print(anime)
         except:
             print("there is an error")
 
