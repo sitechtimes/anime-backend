@@ -22,7 +22,7 @@ class Studio(models.Model):
 class Awards(models.Model):
     award_name = models.CharField(max_length=255)
     # award_img = models.ImageField() #search for more parameters
-    date = models.DateTimeField(null=True, blank=True)
+    date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.award_name
