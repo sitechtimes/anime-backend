@@ -1,6 +1,8 @@
 from anime.models import Anime, AnimeAwards, Awards
+from datetime import date
 
-
+today = date.today()
+print(today)
 anime_awards = [
     "Best Anime",
     "Best Character Design",
@@ -34,9 +36,14 @@ def determine_winner():
                 filtered_award_name = filtered_anime_award.award.award_name
                 filtered_anime = Anime.objects.get(anime_name = filtered_anime_name)
                 filtered_award = Awards.objects.get(award_name = filtered_award_name)
+                filtered_award.date = today
+                filtered_award.save()
+                print(today)
                 filtered_anime.anime_awards.add(filtered_award)
                 filtered_anime.save()
-                print(filtered_anime)
+                
+                
+                print(f"The {filtered_award_name} Award goes to {filtered_anime_name}")
             
                 
                 
