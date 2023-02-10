@@ -2,32 +2,21 @@ from anime.models import Anime, AnimeAwards, Awards
 from datetime import date
 import types
 
-anime_awards = [
-    "Best Anime",
-    "Best Character Design",
-    "Best Animation",
-    "Best New Series",
-    "Best Continuing Series",
-    "Best Ending Sequence",
-    "Best Opening Sequence",
-    "Best Main Character",
-    "Best Supporting Character",
-    "Best Action",
-    "Best Comedy",
-    "Best Drama",
-    "Best Fantasy",
-    "Best Romance",
-    "Best Anime Song"
-]
 
 class FindAwardWinner: 
      def __init__(self):
         self.date = date.today()
+        self.anime_awards = []
+        self.all_winners = []
 
 
-     def determine_winner(self, anime_awards: list[str]):
+     def determine_winner(self):
+        all_awards = Awards.objects.all()
+        
+        for award in all_awards:
+            self.anime_awards.append(award)
 
-        for anime_award in anime_awards:
+        for anime_award in self.anime_awards:
             try:
                 all_anime_awards = AnimeAwards.objects.filter(award__award_name = anime_award)
                 highest_vote_count = max(all_anime_awards, key=lambda y: y.vote_count).vote_count
@@ -45,10 +34,17 @@ class FindAwardWinner:
                     print(self.date)
                     filtered_anime.anime_awards.add(filtered_award)
                     filtered_anime.save()
+                    # return filtered_anime
+                    self.all_winners.append(filtered_anime_award)
+                    # print(self.all_winners)
+                    # print(filtered_anime_award, filtered_anime_name)
                     print(f"The {filtered_award_name} Award goes to {filtered_anime_name}")
+
             except:
                 print("there is an error")
+        print(self.all_winners)
+        return self.all_winners
 
 FindAwardWinner = FindAwardWinner()
 
-FindAwardWinner.determine_winner(anime_awards)
+FindAwardWinner.determine_winner()

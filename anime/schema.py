@@ -7,6 +7,8 @@ from users.models import UserProfile
 from django.conf import settings
 from graphql import GraphQLError
 
+# from scripts.winner import FindAwardWinner
+
 # from users.schema import animeInput, userInput
 
 
@@ -119,7 +121,7 @@ class addVote(graphene.Mutation):
                 
             except Exception:
                 print("there was an error ")
-            
+                ["award1", "blue lock"]
             anime_award = AnimeAwards.objects.get(anime__anime_name = anime_data.anime_name, award__award_name = award_name)
             print("This is the award:", anime_award)
             if anime_award:
@@ -149,7 +151,16 @@ class addVote(graphene.Mutation):
             print(anime_award)
         return addVote(anime_award = anime_award) 
     
-
+# class winner(graphene.Mutation):
+#     anime_awards = graphene.Field(AnimeAwardsNode)
+    
+#     def mutate(self, info):
+        
+#         FindAwardWinner = FindAwardWinner()
+#         # FindAwardWinner.determine_winner()
+#         anime_awards = FindAwardWinner.determine_winner()
+#         return winner(anime_awards = anime_awards)
+        
     
 class Mutation(graphene.ObjectType):
     add_vote = addVote.Field()
