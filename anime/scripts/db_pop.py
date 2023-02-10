@@ -4,7 +4,7 @@ from requests.exceptions import HTTPError
 import datetime
 import time
 
-class DBPopulate():
+class DBPopulate:
     def __init__(self):
         self.base_top_api_url = "https://api.jikan.moe/v4/top/anime/?filter=bypopularity"
         self.base_airing_api_url = "https://api.jikan.moe/v4/anime?status=airing"
@@ -12,7 +12,7 @@ class DBPopulate():
         self.their_airing_anime = set()
         self.response = None
 
-    def requestAPI(self, api_url):
+    def requestAPI(self, api_url: str):
 
         try:
             self.response = requests.get(api_url)
