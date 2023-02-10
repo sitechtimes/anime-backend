@@ -1,5 +1,6 @@
 from anime.models import Anime, AnimeAwards, Awards
 from datetime import date
+import types
 
 anime_awards = [
     "Best Anime",
@@ -24,7 +25,7 @@ class FindAwardWinner:
         self.date = date.today()
 
 
-    def determine_winner(self, anime_awards: List[str]):
+     def determine_winner(self, anime_awards: list[str]):
 
         for anime_award in anime_awards:
             try:
