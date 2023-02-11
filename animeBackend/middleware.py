@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import authentication_classes, permission_classes, api_view
 from rest_framework.settings import api_settings
 
+# from anime.scripts.winner import FindAwardWinner as faw
 
 class DRFAuthenticatedGraphQLView(GraphQLView):
     # graphene expects .body attr but drf attaches to .data
@@ -20,3 +21,15 @@ class DRFAuthenticatedGraphQLView(GraphQLView):
         view = authentication_classes(api_settings.DEFAULT_AUTHENTICATION_CLASSES)(view)
         view = api_view(['GET', 'POST'])(view)
         return view
+    
+# class FindAwardWinner:
+#     def __init__(self) -> None:
+#         self.winners = faw.determine_winner()
+        
+# class WinnerMiddleware:
+#         def resolve(self, next, root, info, **args):
+
+#             if not hasattr(info.context, 'loaders'):
+#                 info.context.loaders = Loaders()
+
+#             return next(root, info, **args)

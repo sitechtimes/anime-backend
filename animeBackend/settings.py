@@ -60,7 +60,11 @@ INSTALLED_APPS = [
 ]
 
 GRAPHENE = {
-    'SCHEMA': 'animeBackend.schema.schema'
+    'SCHEMA': 'animeBackend.schema.schema',
+     'MIDDLEWARE': [
+        'anime.scripts.winner.FindAwardWinner',
+    ],
+    
 }
 
 SOCIALACCOUNT_PROVIDERS = {

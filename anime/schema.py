@@ -62,6 +62,10 @@ class Query(object):
 
     anime = graphene.relay.Node.Field(AnimeNode)
     all_anime = DjangoFilterConnectionField(AnimeNode)
+    
+    # def resolve_winners(self, info):
+
+        
 
     # vote = graphene.relay.Node.Field(VoteNode)
     # all_vote = DjangoFilterConnectionField(VoteNode)
