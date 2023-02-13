@@ -71,3 +71,10 @@ class AnimeAwards(models.Model):
 #     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 #     anime = models.ForeignKey(Anime, on_delete=models.CASCADE)
 #     award =  models.ForeignKey(Awards, on_delete=models.CASCADE)
+
+
+class AllWinners(models.Model):
+    winner = models.ForeignKey(AnimeAwards, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"{self.winner.anime.anime_name}, {self.winner.award.award_name}"
