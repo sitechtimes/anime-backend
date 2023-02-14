@@ -1,7 +1,17 @@
-# from django.test import TestCase
-# from .models import Genre, Awards, AnimeAwards, Anime
-# import datetime
+from django.test import TestCase
+from .models import Genre, Awards, AnimeAwards, Anime
+import datetime
 # # Create your tests here.
+
+class GenreTestCase(TestCase):
+    def setUp(self):
+        Genre.objects.create(  genre ="genre1", )
+        Genre.objects.create(  genre ="genre2",)
+
+    def test_animals_can_speak(self):
+    
+        genre1 = Genre.objects.get(name="genre1")
+        genre2 = Genre.objects.get(name="genre2")
 
 
 # class test_genreModel(TestCase):
