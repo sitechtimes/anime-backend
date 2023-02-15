@@ -36,6 +36,12 @@ class AnimeAwards(models.Model):
     def __str__(self):
         return self.anime_award_name.award_name
 
+class Character(models.model):
+    mal_id = models.IntegerField(null=True)
+    character_name = models.CharField(max_length=255)
+    role = models.CharField(max_length=255)
+    image_url = models.URLField(max_length=255, null=True)
+
 
 class Anime(models.Model):
     mal_id = models.IntegerField(null=True)
@@ -52,9 +58,12 @@ class Anime(models.Model):
     summary = models.TextField(null=True)
     anime_studio = models.ManyToManyField(Studio)
     anime_genre = models.ManyToManyField(Genre)
+    anime_characters = models.ManyToManyField(Character)
     anime_awards = models.ManyToManyField(AnimeAwards)
 
     def __str__(self):
         return self.anime_name
+
+
 
 

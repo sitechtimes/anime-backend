@@ -22,12 +22,14 @@ class DBPopulate():
         except Exception as err:
             raise Exception(f'Other error occurred: {err}')
 
-    def addAnime(self, anime_instance: dict, airing_mode: bool = False):
+    def addAnime(self, anime_instance: dict):
         try:
 
+            """
             if airing_mode is True: # if this function was called from updateAiringAnime
                 my_mal_id = anime_instance["mal_id"] # get the MAL id of the anime
                 self.their_airing_anime.add(my_mal_id) # add the id to the their_airing_anime set
+            """
 
             # get anime title
             if anime_instance["title_english"] is not None:
@@ -176,7 +178,8 @@ class DBPopulate():
             self.requestAPI(api_url)
 
             for instance in self.response["data"]:
-                self.addAnime(instance, airing_mode=True)
+                self.their_airing_anime.add(instance["mal_id"]) #add the anime's id to their airing anime
+                self.addAnime(instance)
 
         print(f"our_airing_anime: {self.our_airing_anime}")
         print(f"their_airing_anime: {self.their_airing_anime}")
@@ -188,13 +191,33 @@ class DBPopulate():
             my_anime.status = "Finished Airing"  # so just set the status to "Finished Airing"
             my_anime.save()
 
-        self.our_airing_anime = None
-        self.their_airing_anime = None
+        self.our_airing_anime = set()
+        self.their_airing_anime = set()
 
-DBPopulate = DBPopulate()
+    def noCharacterAnime(self,):
+        no_character_anime = Anime.objects.filter(anime_characters=None)
+
+        for anime in no_character_anime:
+            self.requestAPI(f"https://api.jikan.moe/v4/anime/{mal_id}/characters")
+            for character in self.response["data"]:
+                if character["role"] == "Main":
+
+    def characterAdd(self, character: dict, anime):
+
+
+
+
+
+
+
+
+
+
+
+# DBPopulate = DBPopulate()
 
 # for page_num in range(1,4):
 #     DBPopulate.initialPopulation(page_num)
 #     time.sleep(4)
 
-DBPopulate.updateAiringAnime()
+# DBPopulate.updateAiringAnime()
