@@ -14,62 +14,26 @@ class GenreTestCase(TestCase):
         genre2 = Genre.objects.get(name="genre2")
 
 
+
+
 class test_genreModel(TestCase):
     def setUp(self):
-        self.date = date.today()
-        self.anime_awards = []
-        self.all_winners = []
+        self.genre = Genre(genre="my cool genre")
 
     def test_genreCreation(self):
-        all_awards = Awards.objects.all()
-        
-        for award in all_awards:
-            self.anime_awards.append(award)
+        self.assertEqual(self.genre.__str__(), "my cool genre")
+        self.assertEqual(self.genre.genre, "my cool genre")
+        self.assertTrue(isinstance(self.genre, Genre))
 
-        for anime_award in self.anime_awards:
-            all_anime_awards = AnimeAwards.objects.filter(award__award_name = anime_award)
-            highest_vote_count = max(all_anime_awards, key=lambda y: y.vote_count).vote_count
-            print(highest_vote_count)
-                
-            filtered_anime_awards = all_anime_awards.filter(vote_count = highest_vote_count)
-            print(len(filtered_anime_awards))
-            for filtered_anime_award in filtered_anime_awards:
-                filtered_anime_name = filtered_anime_award.anime.anime_name
-                filtered_award_name = filtered_anime_award.award.award_name
-                filtered_anime = Anime.objects.get(anime_name = filtered_anime_name)
-                filtered_award = Awards.objects.get(award_name = filtered_award_name)
-                filtered_award.date = self.date
-                filtered_award.save()
-                filtered_anime.anime_awards.add(filtered_award)
-                filtered_anime.save()
-                self.all_winners.append(filtered_anime_award)
-     
-        self.assertEqual(self.all_winners, self.all_winners)
-
-   
+class test_awardModel(TestCase):
+    def setUp(self):
+        self.award = Awards(award_name="the harvey jiang award")
 
 
-
-
-# class test_genreModel(TestCase):
-#     def setUp(self):
-#         self.genre = Genre(genre="my cool genre")
-
-#     def test_genreCreation(self):
-#         self.assertEqual(self.genre.__str__(), "my cool genre")
-#         self.assertEqual(self.genre.genre, "my cool genre")
-#         self.assertTrue(isinstance(self.genre, Genre))
-
-# class test_awardModel(TestCase):
-#     def setUp(self):
-#         self.award = Awards(award_name="the harvey jiang award",award_description="given to anime that harvey likes")
-
-
-#     def test_awardCreation(self):
-#         self.assertEqual(self.award.__str__(), "the harvey jiang award")
-#         self.assertEqual(self.award.award_name, "the harvey jiang award")
-#         self.assertEqual(self.award.award_description, "given to anime that harvey likes")
-#         self.assertTrue(isinstance(self.award, Awards))
+    def test_awardCreation(self):
+        self.assertEqual(self.award.__str__(), "the harvey jiang award")
+        self.assertEqual(self.award.award_name, "the harvey jiang award")
+        self.assertTrue(isinstance(self.award, Awards))
 
 # class test_animeAwardsModel(TestCase):
 #     def setUp(self):
@@ -103,35 +67,23 @@ class test_genreModel(TestCase):
 #             genre="drama"
 #         )
 
-#         self.award_1 = Awards(award_name="the vincenzo award",award_description="given to anime that vincenzo likes")
-#         self.award_2 = Awards(award_name="the  award",award_description="given to anime that kenny likes")
+#         # self.award_1 = Awards(award_name="the vincenzo award",award_description="given to anime that vincenzo likes")
+#         # self.award_2 = Awards(award_name="the  award",award_description="given to anime that kenny likes")
 
 #         self.my_anime = Anime(
 #             anime_name="mr. whalen: the anime",
 #             episodes=6969,
 #             studio_name="staten island tech studios",
 #             aired=True,
-#             status=datetime.date(1970, 1, 1),
+#             status= date(1970, 1, 1),
 #             seasons=69,
 #             summary="mr. whalen checks everyone's projects on november 22nd",
 
-#             # anime_genre={
-#             #     self.genre_1,
-#             #     self.genre_2
-#             # },
+#             anime_genre={
+#                 self.genre_1,
+#                 self.genre_2
+#             },
 
-#             # anime_awards={
-#             #     AnimeAwards(
-#             #         nominated_for_award=True,
-#             #         has_award=False,
-#             #         anime_award_name=self.award_1
-#             #     ),
-#             #     AnimeAwards(
-#             #         nominated_for_award = True,
-#             #         has_award = True,
-#             #         anime_award_name = self.award_2
-#             #     )
-#             # }
 #         )
 
 #     def test_animeModel(self):

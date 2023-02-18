@@ -12,8 +12,9 @@ from socialLogin.views import GoogleLogin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path("graphql/", GraphQLView.as_view(graphiql=True)),
+    path("anime/", GraphQLView.as_view(graphiql=True)),
     path('social-login/google/', GoogleLogin.as_view(), name='google_login'),
     path('auth/', include('dj_rest_auth.urls')),
     path("graphql/", DRFAuthenticatedGraphQLView.as_view(graphiql=True)),
+
 ]
