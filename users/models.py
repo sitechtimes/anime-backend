@@ -37,7 +37,6 @@ class UserVotedAnime(models.Model):
 
 class UserProfile(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    created_date = models.DateField(null=True, blank=True)
     # grade = models.IntegerField()
     user_voted_animes = models.ManyToManyField("anime.AnimeAwards",  blank=True)
     user_anime = models.ManyToManyField(UserAnime,related_name='taken', blank=True)
@@ -67,10 +66,7 @@ def create_user_customer(sender, instance, created, **kwargs):
                 # user.remove()
                 return 
             else:
-                date = date.today()
                 user = UserProfile.objects.get_or_create(user=instance)
-                user.created_date = date
-                user.save()
         except Exception:
             return
 
