@@ -67,11 +67,12 @@ def create_user_customer(sender, instance, created, **kwargs):
                 # user.remove()
                 return 
             else:
-                date = date.today()
+                # date = date.today()
                 user = UserProfile.objects.get_or_create(user=instance)
-                user.created_date = date
+                print(user)
+                # user.created_date = date
                 user.save()
         except Exception:
-            return
+            print("there is an error")
 
 post_save.connect(create_user_customer, sender=CustomUser)

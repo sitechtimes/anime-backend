@@ -1,6 +1,5 @@
-from django.shortcuts import render
+# backend/social-login/views.py
 
-# Create your views here.
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from dj_rest_auth.registration.views import SocialLoginView
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client

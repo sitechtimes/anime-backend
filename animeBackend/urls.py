@@ -8,6 +8,7 @@ from django.contrib import admin
 from django.urls import path, include
 from .middleware import DRFAuthenticatedGraphQLView
 from socialLogin.views import GoogleLogin
+from django.contrib.auth.views import LogoutView
 # from anime.schema import schema
 
 urlpatterns = [
@@ -16,5 +17,6 @@ urlpatterns = [
     path('social-login/google/', GoogleLogin.as_view(), name='google_login'),
     path('auth/', include('dj_rest_auth.urls')),
     path("graphql/", DRFAuthenticatedGraphQLView.as_view(graphiql=True)),
+    path('logout/', LogoutView.as_view()),
 
 ]
