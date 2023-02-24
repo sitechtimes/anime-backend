@@ -110,8 +110,8 @@ class addVote(graphene.Mutation):
         return UserProfile.objects.get(user_id = id)
     
     @staticmethod
-    def get_anime(name):
-        return Anime.objects.get(anime_name = name)
+    def get_anime(id):
+        return Anime.objects.get(mal_id = id)
     
     @staticmethod
     def get_award(name):
@@ -119,7 +119,7 @@ class addVote(graphene.Mutation):
     
     def mutate(self, info, user_data=None, anime_data=None, award_name=None):
         user = addVote.get_user(user_data.user_id)
-        anime = addVote.get_anime(anime_data.anime_name)
+        anime = addVote.get_anime(anime_data.anime_id)
         award = addVote.get_award(award_name)
         print(user, anime, award)
         print("hi")
@@ -136,7 +136,7 @@ class addVote(graphene.Mutation):
             except Exception:
                 print("there was an error ")
                 ["award1", "blue lock"]
-            anime_award = AnimeAwards.objects.get(anime__anime_name = anime_data.anime_name, award__award_name = award_name)
+            anime_award = AnimeAwards.objects.get(anime__mal_id = anime_data.anime_id, award__award_name = award_name)
             print("This is the award:", anime_award)
             if anime_award:
                 print("Anime exists")

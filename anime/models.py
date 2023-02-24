@@ -53,6 +53,7 @@ class Anime(models.Model):
     anime_studio = models.ManyToManyField(Studio)
     anime_genre = models.ManyToManyField(Genre)
     anime_awards = models.ManyToManyField(Awards)
+    number_rating = models.IntegerField(null=True, default=0)#number of ratings
 
     def __str__(self):
         return self.anime_name

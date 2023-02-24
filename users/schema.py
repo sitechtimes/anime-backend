@@ -62,7 +62,7 @@ class userAnimeInput(graphene.InputObjectType):
     anime_name = graphene.String(required=True)
 
 
-class addRating(graphene.Mutation):
+class addUserAnime(graphene.Mutation):
     class Arguments:
         user_data = userInput(required=True)
         anime_data = animeInput(required=True)
@@ -73,16 +73,18 @@ class addRating(graphene.Mutation):
 
     @staticmethod
     def get_anime(id):
-        return Anime.objects.get(pk=id)
+        return Anime.objects.get(mal_id=id)
 
     @staticmethod
     def get_user(id):
         return UserProfile.objects.get(user_id=id)
 
     def mutate(self, info, user_data=None, anime_data=None):
-        anime = addRating.get_anime(anime_data.anime_id)
-        user = addRating.get_user(user_data.user_id)
-
+        anime = addUserAnime.get_anime(anime_data.anime_id)
+        user = addUserAnime.get_user(user_data.user_id)
+        # user_anime_exist = UserAnime.objects.filter(anime = anime, user = user)
+        # if user_anime_exist:
+        #     return GraphQLError("you already submitted response, you need to edit it")
         # user = UserProfile.objects.create(
         #     user = CustomUser.objects.create(email = "ps@pls.com", username = "sdcfgdfgwerdfs")
         # )
@@ -130,7 +132,7 @@ class addRating(graphene.Mutation):
             user_anime.save()
             user.user_anime.add(user_anime)
             user.save()
-        return addRating(user=user, user_anime=user_anime)
+        return addUserAnime(user=user, user_anime=user_anime)
 
 
 
@@ -244,5 +246,5 @@ class CreateUser(graphene.Mutation):
 
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
-    add_rating = addRating.Field()
+    add_user_anime = addUserAnime.Field()
     update_user_anime = updateUserAnime.Field()
