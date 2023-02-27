@@ -8,6 +8,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+import datetime
+
 watching_status = [
     ("NOT_WATCHING", "Not Watching"),
     ("CURRENTLY_WATCHING",  "Currently watching"),
@@ -53,6 +55,8 @@ class UserProfile(models.Model):
 
 @receiver(post_save, sender=CustomUser)
 def create_user_customer(sender, instance, created, **kwargs):
+    date = datetime.date.today()
+    print(date)
     if created:
         try:
             print(instance.email)
@@ -68,10 +72,12 @@ def create_user_customer(sender, instance, created, **kwargs):
                 return 
             else:
                 # date = date.today()
-                user = UserProfile.objects.get_or_create(user=instance)
+                user = UserProfile.objects.get_or_create(user=instance, created_date = date)
                 print(user)
                 # user.created_date = date
                 user.save()
+                # user.created_date = date
+                # user.save()
         except Exception:
             print("there is an error")
 
