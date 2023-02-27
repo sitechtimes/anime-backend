@@ -10,12 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+TEST_RUNNER = 'snapshottest.django.TestRunner'
 
 load_dotenv()
 # Quick-start development settings - unsuitable for production
@@ -44,13 +45,13 @@ INSTALLED_APPS = [
     "anime",
     "graphene_django",
     "django_filters",
-    
+
     "socialLogin",
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
-    
-      # Auth & social auth
+
+    # Auth & social auth
     "dj_rest_auth",
     "allauth",
     "allauth.account",
@@ -61,10 +62,10 @@ INSTALLED_APPS = [
 
 GRAPHENE = {
     'SCHEMA': 'animeBackend.schema.schema',
-     'MIDDLEWARE': [
+    'MIDDLEWARE': [
         'anime.scripts.winner.FindAwardWinner',
     ],
-    
+
 }
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -88,16 +89,14 @@ REST_USE_JWT = True
 
 SITE_ID = 1
 
-from datetime import timedelta
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=3),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': True, # IMPORTANT
-    'BLACKLIST_AFTER_ROTATION': True, # IMPORTANT
+    'ROTATE_REFRESH_TOKENS': True,  # IMPORTANT
+    'BLACKLIST_AFTER_ROTATION': True,  # IMPORTANT
     'UPDATE_LAST_LOGIN': True,
 }
-
 
 
 MIDDLEWARE = [
@@ -127,8 +126,7 @@ ROOT_URLCONF = 'animeBackend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -200,4 +198,3 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 UTH_USER_MODULE = 'users.CustomUser'
-

@@ -1,19 +1,32 @@
 from django.test import TestCase
+from snapshottest.django import TestCase
+from graphene.test import Client
 from .models import Genre, Anime, AnimeAwards, Awards
+from animeBackend.schema import schema
 from datetime import date
 # # Create your tests here.
 
-class GenreTestCase(TestCase):
-    def setUp(self):
-        Genre.objects.create(  genre ="genre1", )
-        Genre.objects.create(  genre ="genre2",)
 
-    def test_animals_can_speak(self):
+class APITestCase(TestCase):
+    def test_anime(self):
+        """Testing the API for /me"""
+        client = Client(schema)
+        self.assertMatchSnapshot(client.execute('''
+query {
+   allAnime{
+   edges{
+     node{
+         id,
+       
+       animeName,
+       episodes,
     
-        genre1 = Genre.objects.get(name="genre1")
-        genre2 = Genre.objects.get(name="genre2")
+       status,
 
-
+     }
+   }
+ }
+}'''))
 
 
 class test_genreModel(TestCase):
@@ -25,10 +38,10 @@ class test_genreModel(TestCase):
         self.assertEqual(self.genre.genre, "my cool genre")
         self.assertTrue(isinstance(self.genre, Genre))
 
+
 class test_awardModel(TestCase):
     def setUp(self):
         self.award = Awards(award_name="the harvey jiang award")
-
 
     def test_awardCreation(self):
         self.assertEqual(self.award.__str__(), "the harvey jiang award")
@@ -55,6 +68,7 @@ class test_awardModel(TestCase):
 #         self.assertEqual(self.anime_awards.anime_award_name.award_description, "given to anime that kenny likes")
 #         self.assertEqual(self.anime_awards.anime_award_name.award_name, "the kenny tung award")
 
+
 # class test_animeModel(TestCase):
 
 #     def setUp(self):
@@ -73,9 +87,9 @@ class test_awardModel(TestCase):
 #         self.my_anime = Anime(
 #             anime_name="mr. whalen: the anime",
 #             episodes=6969,
-#             studio_name="staten island tech studios",
+#             anime_studio="staten island tech studios",
 #             aired=True,
-#             status= date(1970, 1, 1),
+#             status=date(1970, 1, 1),
 #             seasons=69,
 #             summary="mr. whalen checks everyone's projects on november 22nd",
 
@@ -90,17 +104,11 @@ class test_awardModel(TestCase):
 #         self.assertEqual(self.my_anime.__str__(), "mr. whalen: the anime")
 #         self.assertTrue(isinstance(self.my_anime, Anime))
 #         self.assertEqual(self.my_anime.episodes, 6969)
-#         self.assertEqual(self.my_anime.studio_name, "staten island tech studios")
+#         self.assertEqual(self.my_anime.anime_studio,
+#                          "staten island tech studios")
 #         self.assertEqual(self.my_anime.aired, True)
 #         self.assertEqual(str(self.my_anime.status), "1970-01-01")
-#         self.assertTrue(isinstance(self.my_anime.status,datetime.date))
-#         self.assertEqual(self.my_anime.seasons, 69)
+#         self.assertTrue(isinstance(self.my_anime.status, date))
 #         self.assertEqual(self.my_anime.anime_name, "mr. whalen: the anime")
-#         self.assertEqual(self.my_anime.summary, "mr. whalen checks everyone's projects on november 22nd")
-
-
-
-
-
-
-
+#         self.assertEqual(self.my_anime.summary,
+#                          "mr. whalen checks everyone's projects on november 22nd")
