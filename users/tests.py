@@ -1,5 +1,8 @@
 from django.test import TestCase
 from .models import UserProfile, CustomUser, User
+from snapshottest.django import TestCase
+from animeBackend.schema import schema
+from graphene.test import Client
 
 # Create your tests here.
 
@@ -15,3 +18,36 @@ from .models import UserProfile, CustomUser, User
 #     def test(self):
 #         self.user1 = UserProfile.objects.get(email="test@d.com")
 #         print(self.user1.__dict__["_state"].__dict__)
+
+class UserAnimeTestCase(TestCase):
+    def test_update_user_anime(self):
+        client = Client(schema)
+        self.assertMatchSnapshot(client.execute('''
+     mutation{
+   updateUserAnime(userData: {userId: "2"}, userAnimeData: {animeName: "One Piece", watchStatus: "NOT_WATCHING"}){
+       user{
+           user{
+               username,
+               email,
+            
+           },
+           userAnime {
+             edges{
+                 node{
+                     anime{
+                         id,
+                         animeName,
+                         episodes
+                     },
+                     rating,
+                     watchingStatus
+                 }
+             }
+           }
+       }
+    
+   }
+  
+}
+        '''))
+

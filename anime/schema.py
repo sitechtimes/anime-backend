@@ -1,7 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-from anime.models import Anime, Genre, Awards, AnimeAwards, AllWinners
+from anime.models import Anime, Genre, Awards, AnimeAwards, AllWinners, Studio
 from users.models import UserProfile
 # from users.models import CustomUser
 from django.conf import settings
@@ -35,6 +35,14 @@ class AnimeAwardsNode(DjangoObjectType):
         filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
 
+
+class AnimeStudioNode(DjangoObjectType):
+    class Meta:
+        model =  Studio
+        fields = "__all__"
+        filter_fields = "__all__"
+        interfaces = (graphene.relay.Node,)
+
 class AllWinnersNode(DjangoObjectType):
     class Meta:
         model = AllWinners
@@ -61,6 +69,9 @@ class AnimeNode(DjangoObjectType):
 class Query(object):
     genre = graphene.relay.Node.Field(GenreNode)
     all_genres = DjangoFilterConnectionField(GenreNode)
+
+    studio = graphene.relay.Node.Field(AnimeStudioNode)
+    all_studios = DjangoFilterConnectionField(AnimeStudioNode)
 
     awards = graphene.relay.Node.Field(AwardsNode)
     all_awards = DjangoFilterConnectionField(AwardsNode)
@@ -111,7 +122,8 @@ class addVote(graphene.Mutation):
     
     @staticmethod
     def get_anime(id):
-        return Anime.objects.get(mal_id = id)
+        return Anime.objects.get( anime_name = id)
+        
     
     @staticmethod
     def get_award(name):
@@ -119,7 +131,7 @@ class addVote(graphene.Mutation):
     
     def mutate(self, info, user_data=None, anime_data=None, award_name=None):
         user = addVote.get_user(user_data.user_id)
-        anime = addVote.get_anime(anime_data.anime_id)
+        anime = addVote.get_anime(anime_data.anime_name)
         award = addVote.get_award(award_name)
         print(user, anime, award)
         print("hi")

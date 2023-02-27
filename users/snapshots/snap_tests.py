@@ -7,40 +7,22 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['AddVoteTestCase::test_add_vote 1'] = {
+snapshots['UserAnimeTestCase::test_update_user_anime 1'] = {
     'data': {
-        'addVote': None
+        'updateUserAnime': None
     },
     'errors': [
         {
             'locations': [
                 {
-                    'column': 3,
+                    'column': 4,
                     'line': 3
                 }
             ],
             'message': 'UserProfile matching query does not exist.',
             'path': [
-                'addVote'
+                'updateUserAnime'
             ]
         }
     ]
-}
-
-snapshots['AnimeQLTestCase::test_anime 1'] = {
-    'data': {
-        'allAnime': {
-            'edges': [
-            ]
-        }
-    }
-}
-
-snapshots['FindWinnerTestCase::test_find_winner 1'] = {
-    'data': {
-        'winner': {
-            'animeAwards': [
-            ]
-        }
-    }
 }
