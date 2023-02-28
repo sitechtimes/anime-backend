@@ -1,4 +1,4 @@
-from anime.models import Anime, Genre, Studio
+from anime.models import Anime, Genre, Studio, Character
 import requests
 from requests.exceptions import HTTPError
 import datetime
@@ -194,15 +194,64 @@ class DBPopulate():
         self.our_airing_anime = set()
         self.their_airing_anime = set()
 
-    def noCharacterAnime(self,):
+    def noCharacterAnime(self, min_characters: int = 10, min_side_characters: int = 5,):
         no_character_anime = Anime.objects.filter(anime_characters=None)
 
         for anime in no_character_anime:
-            self.requestAPI(f"https://api.jikan.moe/v4/anime/{mal_id}/characters")
+            my_mal_id = anime.mal_id
+            self.requestAPI(f"https://api.jikan.moe/v4/anime/{my_mal_id}/characters")
+            supporting_index_favorites = dict()
+
             for character in self.response["data"]:
                 if character["role"] == "Main":
+                    self.characterAdd(character, my_mal_id)
+                else:
+                    supporting_index_favorites[self.response["data"].index(character)] = character["favorites"] # add a key value pair to the dictionary {(character mal id): (number of favorites)}
 
-    def characterAdd(self, character: dict, anime):
+            sorted_supporting_index_favorites = dict(sorted(supporting_index_favorites.items(), key=lambda x:x[1], reverse=True)) # sort the dictionary by descending order of favorites
+            print(f"SORTED: {sorted_supporting_index_favorites}")
+
+            main_characters = anime.anime_characters.all().count()
+
+            if main_characters >= min_characters - min_side_characters:
+                side_characters = min_side_characters
+            else:
+                side_characters = min_characters - main_characters
+
+            ### here
+
+            side_characters_to_add = list(sorted_supporting_index_favorites.keys())[:side_characters] # get the first (side_characters) mal ids of the set
+            for character_index in side_characters_to_add:
+                side_character = self.response["data"][character_index] # find the character that corresponds to the given index
+                self.characterAdd(side_character, my_mal_id) # add that character
+
+            time.sleep(4)
+
+
+
+
+
+                # continue here dummy
+    def characterAdd(self, character: dict, anime_mal_id: int):
+        try:
+            my_character_mal_id = character["character"]["mal_id"]
+            my_character_name = character["character"]["name"]
+            my_anime = Anime.objects.get(mal_id=anime_mal_id)
+            print(my_anime)
+            my_character = Character.objects.get(character_name=my_character_mal_id) #if it exists it will move on fine
+                                                                                     #if not then it will move onto except
+            print(f"character already exists: {my_character_name}")
+            my_anime.anime_characters.add(my_character)
+        except Character.DoesNotExist:
+            my_character = Character(
+                mal_id=my_character_mal_id,
+                character_name=my_character_name,
+                role=character["role"],
+                image_url=character["character"]["images"]["jpg"]["image_url"],
+            )
+            my_character.save()
+            print(my_character.character_name)
+            my_anime.anime_characters.add(my_character)
 
 
 
@@ -214,10 +263,16 @@ class DBPopulate():
 
 
 
-# DBPopulate = DBPopulate()
+
+
+
+
+DBPopulate = DBPopulate()
 
 # for page_num in range(1,4):
 #     DBPopulate.initialPopulation(page_num)
 #     time.sleep(4)
 
 # DBPopulate.updateAiringAnime()
+
+DBPopulate.noCharacterAnime(15, 10)

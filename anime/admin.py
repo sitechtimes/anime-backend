@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.shortcuts import render
-from.models import Anime, Genre, Awards, AnimeAwards, Studio
+from.models import Anime, Genre, Awards, AnimeAwards, Studio, Character
 import requests
 import datetime
 
@@ -11,3 +11,4 @@ admin.site.register(Genre)
 admin.site.register(Anime)
 admin.site.register(Awards)
 admin.site.register(AnimeAwards)
+admin.site.register(Character)

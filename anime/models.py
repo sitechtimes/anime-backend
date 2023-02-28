@@ -36,12 +36,15 @@ class AnimeAwards(models.Model):
     def __str__(self):
         return self.anime_award_name.award_name
 
-class Character(models.model):
+
+class Character(models.Model):
     mal_id = models.IntegerField(null=True)
     character_name = models.CharField(max_length=255)
     role = models.CharField(max_length=255)
     image_url = models.URLField(max_length=255, null=True)
 
+    def __str__(self):
+        return self.character_name
 
 class Anime(models.Model):
     mal_id = models.IntegerField(null=True)
