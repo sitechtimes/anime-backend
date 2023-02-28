@@ -13,7 +13,7 @@ from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("anime/", GraphQLView.as_view(graphiql=True)),
+    path("anime/", csrf_exempt(GraphQLView.as_view(graphiql=True))),
     path('social-login/google/', GoogleLogin.as_view(), name='google_login'),
     path('auth/', include('dj_rest_auth.urls')),
     path("graphql/", DRFAuthenticatedGraphQLView.as_view(graphiql=True)),
