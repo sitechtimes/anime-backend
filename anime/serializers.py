@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from anime.models import Anime, Genre
+from anime.models import Anime, Genre, Studio
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,9 +7,17 @@ class GenreSerializer(serializers.ModelSerializer):
         fields = [
             "genre"
         ]
+        
+class StudioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Studio
+        fields = [
+            "studio"
+        ]
 
 class AnimeSerializer(serializers.ModelSerializer):
     anime_genre = GenreSerializer(many = True, read_only = True)
+    anime_studio = StudioSerializer(many = True, read_only = True)
     
     class Meta:
         model = Anime
