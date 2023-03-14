@@ -60,6 +60,14 @@ class test_characterModel(TestCase):
             image_url="https://example.com/image.jpg"
         )
 
+    def test_characterModel(self):
+        self.assertEqual(self.my_character.__str__(), "Jiang, Harvey")
+        self.assertEqual(self.my_character.mal_id, 123456)
+        self.assertEqual(self.my_character.character_name, "Jiang, Harvey")
+        self.assertEqual(self.my_character.role, "Main")
+        self.assertEqual(self.my_character.image_url, "https://example.com/image.jpg")
+        self.assertTrue(isinstance(self.my_character, Character))
+
 class test_animeModel(TestCase):
 
     def setUp(self):

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.shortcuts import render
-from.models import Anime, Genre, Awards, AnimeAwards, Studio, Character
+from anime.models import Anime, Genre, Awards, AnimeAwards, Studio, Character
 import requests
 import datetime
 
