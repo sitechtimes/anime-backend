@@ -1,4 +1,3 @@
-
 from anime.models import Anime, Genre, Studio, Character
 import requests
 from requests.exceptions import HTTPError
@@ -6,8 +5,7 @@ import datetime
 import time
 
 
-
-class DBPopulate:
+class DBPopulate():
     def __init__(self):
         self.base_top_api_url = "https://api.jikan.moe/v4/top/anime/?filter=bypopularity"
         self.base_airing_api_url = "https://api.jikan.moe/v4/anime?status=airing"
@@ -16,8 +14,8 @@ class DBPopulate:
         self.update_characters_anime = set()
         self.response = None
 
+    def requestAPI(self, api_url):
 
-    def requestAPI(self, api_url: str):
         try:
             self.response = requests.get(api_url)
             self.response = self.response.json()
@@ -25,7 +23,6 @@ class DBPopulate:
             raise HTTPError(f'HTTP error occurred: {http_err}')
         except Exception as err:
             raise Exception(f'Other error occurred: {err}')
-
 
     def addAnime(self, anime_instance: dict):
         try:
@@ -147,7 +144,6 @@ class DBPopulate:
             my_anime.anime_studio.add(Studio.objects.get(studio=studio_name))
             my_anime.save()
 
-
     def initialPopulation(self, pages: int = 5, min_characters: int = 10, min_side_characters: int = 5,):
 
         for page_num in range(1,pages+1):
@@ -160,9 +156,7 @@ class DBPopulate:
 
         self.noCharacterAnime(min_characters,min_side_characters)
 
- 
-
-    def updateAiringAnime(self):
+    def updateAiringAnime(self, min_characters: int = 10, min_side_characters: int = 5,):
 
         # get all the anime that we have that are airing
         try:
@@ -184,12 +178,12 @@ class DBPopulate:
             self.requestAPI(api_url)
 
             for instance in self.response["data"]:
-
                 self.their_airing_anime.add(instance["mal_id"]) #add the anime's id to their airing anime
                 self.addAnime(instance)
                 self.update_characters_anime.add(Anime.objects.get(mal_id=instance["mal_id"])) # add the newly created anime to the update characters set
 
         self.updateCharacters(self.update_characters_anime, min_characters, min_side_characters,)
+
 
         print(f"our_airing_anime: {self.our_airing_anime}")
         print(f"their_airing_anime: {self.their_airing_anime}")
@@ -208,7 +202,6 @@ class DBPopulate:
     def noCharacterAnime(self, min_characters: int = 10, min_side_characters: int = 5,):
         no_character_anime_set = set(Anime.objects.filter(anime_characters=None))
         self.updateCharacters(no_character_anime_set, min_characters, min_side_characters)
-        
     def updateCharacters(self, anime_set: set, min_characters: int = 10, min_side_characters: int = 5,):
 
         for anime in anime_set:

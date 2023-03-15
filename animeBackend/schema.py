@@ -1,31 +1,21 @@
 import graphene
-import users.schema
+import user.schema
 import anime.schema
-# import history.schema
-
 
 class Query(
     anime.schema.Query, # Add your Query objects here
-    users.schema.Query,
-    # history.schema.Query,
+    user.schema.Query,
     graphene.ObjectType
 ):
     pass
-
 
 class Mutation(
-    users.schema.Mutation,
-    anime.schema.Mutation,
+    anime.schema.Mutation, # Add your Mutation objects here
     graphene.ObjectType
-
 ):
-
     pass
 
-
-schema = graphene.Schema(query=Query, mutation= Mutation )
-# schema = graphene.Schema(query=Query, mutation=Mutation)
-
+schema = graphene.Schema(query=Query, mutation=Mutation)
 
 
 
