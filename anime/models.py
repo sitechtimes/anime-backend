@@ -1,4 +1,7 @@
 from django.db import models
+# from users.models import CustomUser
+from django.conf import settings
+from users.models import UserVotedAnime
 
 # Create your models here.
 
@@ -19,22 +22,12 @@ class Studio(models.Model):
 class Awards(models.Model):
     award_name = models.CharField(max_length=255)
     # award_img = models.ImageField() #search for more parameters
+    date = models.DateField(null=True, blank=True)
 
     def __str__(self):
 
         return self.award_name
 
-
-class AnimeAwards(models.Model):
-    nominated_for_award = models.BooleanField()
-    nominated_date = models.DateField(null=True)
-    has_award = models.BooleanField()
-    received_date = models.DateField(null=True)
-    anime_award_name = models.OneToOneField(Awards, on_delete=models.CASCADE, )
-
-
-    def __str__(self):
-        return self.anime_award_name.award_name
 
 
 class Character(models.Model):
@@ -61,12 +54,38 @@ class Anime(models.Model):
     summary = models.TextField(null=True)
     anime_studio = models.ManyToManyField(Studio)
     anime_genre = models.ManyToManyField(Genre)
+
     anime_characters = models.ManyToManyField(Character)
-    anime_awards = models.ManyToManyField(AnimeAwards)
+    anime_awards = models.ManyToManyField(Awards)
+    number_rating = models.IntegerField(null=True, default=0)#number of ratings
 
     def __str__(self):
         return self.anime_name
 
 
 
+
+
+
+class AnimeAwards(models.Model):
+    vote_count = models.IntegerField(default=0)
+    anime = models.ForeignKey(Anime, on_delete=models.CASCADE, blank=True, null=True)
+    award = models.ForeignKey(Awards, on_delete=models.CASCADE, blank=True, null=True)
+    allUsers = models.ManyToManyField("users.UserProfile")
+    
+    def __str__(self):
+        return f"{self.anime.anime_name}, {self.award.award_name}"
+    
+ 
+# class Vote(models.Model):
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+#     anime = models.ForeignKey(Anime, on_delete=models.CASCADE)
+#     award =  models.ForeignKey(Awards, on_delete=models.CASCADE)
+
+
+class AllWinners(models.Model):
+    winner = models.ForeignKey(AnimeAwards, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"{self.winner.anime.anime_name}, {self.winner.award.award_name}"
 

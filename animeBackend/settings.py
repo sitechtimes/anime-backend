@@ -10,17 +10,20 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
-
+from dotenv import load_dotenv
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+TEST_RUNNER = 'snapshottest.django.TestRunner'
 
-
+load_dotenv()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-em1gz8q@-ri3&q)ylej=h%w@tlbpd4_iu-m4@(w+7xoi(kww9+'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,17 +40,67 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "user",
+    "django.contrib.sites",
+    "users",
     "anime",
     "graphene_django",
     "django_filters",
+
+    "socialLogin",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "corsheaders",
+
+    # Auth & social auth
+    "dj_rest_auth",
+    "allauth",
+    "allauth.account",
+    "dj_rest_auth.registration",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
 ]
 
 GRAPHENE = {
-    # "SCHEMA": "user.schema.schema"
-    'SCHEMA': 'animeBackend.schema.schema'
+    'SCHEMA': 'animeBackend.schema.schema',
+    'MIDDLEWARE': [
+        'anime.scripts.winner.FindAwardWinner',
+    ],
+
 }
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+# Disable email verification since this is just a test.
+# If you want to enable it, you'll need to configure django-allauth's email confirmation pages
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_EMAIL_REQUIRED = False
+
+REST_USE_JWT = True
+
+SITE_ID = 1
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=3),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,  # IMPORTANT
+    'BLACKLIST_AFTER_ROTATION': True,  # IMPORTANT
+    'UPDATE_LAST_LOGIN': True,
+}
+
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -57,13 +110,23 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "dj_rest_auth.utils.JWTCookieAuthentication",
+    ),
+}
+
 ROOT_URLCONF = 'animeBackend.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,6 +138,9 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
 
 WSGI_APPLICATION = 'animeBackend.wsgi.application'
 
@@ -130,3 +196,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+UTH_USER_MODULE = 'users.CustomUser'
