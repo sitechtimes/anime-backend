@@ -50,6 +50,7 @@ class Anime(models.Model):
     status = models.CharField(max_length=255, null=True)
     aired_from = models.DateField(null=True)
     aired_to = models.DateField(null=True)
+    season = models.CharField(max_length=255,null=True)
     summary = models.TextField(null=True)
     anime_studio = models.ManyToManyField(Studio)
     anime_genre = models.ManyToManyField(Genre)
