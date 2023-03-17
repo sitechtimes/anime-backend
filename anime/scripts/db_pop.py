@@ -27,7 +27,7 @@ class DBPopulate():
     def addAnime(self, anime_instance: dict):
         try:
             # get anime title
-            if anime_instance["title_english"] is not None:
+            if not anime_instance["title_english"] is None:
                 my_anime_name = anime_instance["title_english"]
             else:
                 my_anime_name = anime_instance["title"]
@@ -50,6 +50,26 @@ class DBPopulate():
                 my_from_date = datetime.date(date["year"], date["month"], date["day"])
             else:
                 my_from_date = None
+
+            # get the season if the month the anime aired is available
+            my_month = my_from_date.month
+            match my_month:
+                case 1|2|3:
+                    my_time_of_year = "Winter"
+                case 4|5|6:
+                    my_time_of_year = "Spring"
+                case 7|8|9:
+                    my_time_of_year = "Summer"
+                case 10|11|12:
+                    my_time_of_year = "Fall"
+                case None:
+                    my_time_of_year = ""
+
+            if my_time_of_year is not "":
+                my_season = f"{my_time_of_year} {my_from_date.year}"
+            else:
+                my_season = None
+
 
             # get the date where the anime stopped airing, if any
             date = anime_instance["aired"]["prop"]["to"]
@@ -77,6 +97,7 @@ class DBPopulate():
             my_anime.aired_from = my_from_date
             my_anime.aired_to = my_to_date
             my_anime.summary = anime_instance["synopsis"]
+            my_anime.season = my_season
 
             my_anime.save()
 
@@ -97,6 +118,7 @@ class DBPopulate():
                 aired_from=my_from_date,
                 aired_to=my_to_date,
                 summary=anime_instance["synopsis"],
+                season=my_season
             )
             my_anime.save()
 

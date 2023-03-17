@@ -59,10 +59,12 @@ class Anime(models.Model):
     aired_from = models.DateField(null=True)
     aired_to = models.DateField(null=True)
     summary = models.TextField(null=True)
+    season = models.CharField(max_length=255,null=True)
     anime_studio = models.ManyToManyField(Studio)
     anime_genre = models.ManyToManyField(Genre)
     anime_characters = models.ManyToManyField(Character)
     anime_awards = models.ManyToManyField(AnimeAwards)
+
 
     def __str__(self):
         return self.anime_name
