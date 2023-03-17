@@ -7,12 +7,41 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['GraphQLTests::test_create_award 1'] = {
+snapshots['AddVoteTestCase::test_add_vote 1'] = {
     'data': {
-        'createAward': {
-            'award': {
-                'awardName': 'goober award'
-            }
+        'addVote': None
+    },
+    'errors': [
+        {
+            'locations': [
+                {
+                    'column': 3,
+                    'line': 3
+                }
+            ],
+            'message': 'UserProfile matching query does not exist.',
+            'path': [
+                'addVote'
+            ]
+        }
+    ]
+}
+
+snapshots['AnimeQLTestCase::test_anime 1'] = {
+    'data': {
+        'allAnime': {
+            'edges': [
+            ]
+        }
+    }
+}
+
+snapshots['FindWinnerTestCase::test_find_winner 1'] = {
+    'data': {
+        'winner': {
+            'animeAwards': [
+            ]
+
         }
     }
 }
