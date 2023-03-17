@@ -1,7 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-from anime.models import Anime, Genre, Awards, AnimeAwards, AllWinners, Studio
+from anime.models import Anime, Genre, Awards, AnimeAwards, AllWinners, Studio, Character
 from users.models import UserProfile
 # from users.models import CustomUser
 from django.conf import settings
@@ -59,6 +59,14 @@ class AnimeNode(DjangoObjectType):
         filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
 
+class CharacterNode(DjangoObjectType):
+    class Meta:
+        model = Character
+        fields = "__all__"
+        filter_fields = "__all__"
+        interfaces = (graphene.relay.Node,)
+
+
 # class VoteNode(DjangoObjectType):
 #     class Meta:
 #         model = Vote
@@ -84,8 +92,11 @@ class Query(object):
     
     winner = graphene.relay.Node.Field(AllWinnersNode)
     all_winners = DjangoFilterConnectionField(AllWinnersNode)
+    
+    character = graphene.relay.Node.Field(CharacterNode)
+    all_characters = DjangoFilterConnectionField(CharacterNode)
     # def resolve_winners(self, info):
-
+    # def resolve_characters()
         
 
     # vote = graphene.relay.Node.Field(VoteNode)
