@@ -27,14 +27,14 @@ class Awards(models.Model):
     def __str__(self):
         return self.award_name
 
+class Character(models.Model):
+    mal_id = models.IntegerField(null=True)
+    character_name = models.CharField(max_length=255)
+    role = models.CharField(max_length=255)
+    image_url = models.URLField(max_length=255, null=True)
 
-# class AnimeAwards(models.Model):
-#     nominated_for_award = models.BooleanField()
-#     has_award = models.BooleanField()
-#     anime_award_name = models.OneToOneField(Awards, on_delete=models.CASCADE, )
-
-#     def __str__(self):
-#         return self.anime_award_name
+    def __str__(self):
+        return self.character_name
 
 
 class Anime(models.Model):
@@ -44,6 +44,7 @@ class Anime(models.Model):
     image_url = models.URLField(max_length=255, null=True)
     small_image_url = models.URLField(max_length=255, null=True)
     large_image_url = models.URLField(max_length=255, null=True)
+    anime_characters = models.ManyToManyField(Character)
     trailer_youtube_url = models.URLField(max_length=255, null=True)
     episodes = models.IntegerField(null=True)
     status = models.CharField(max_length=255, null=True)
