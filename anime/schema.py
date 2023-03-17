@@ -1,17 +1,9 @@
 import graphene
+from graphene import Date
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-from anime.models import Anime, Genre, Awards, AnimeAwards, AllWinners, Studio
-from users.models import UserProfile
-# from users.models import CustomUser
-from django.conf import settings
+from.models import Anime, Genre, Awards, AnimeAwards
 from graphql import GraphQLError
-
-# from scripts.winner import FindAwardWinner
-
-# from users.schema import animeInput, userInput
-from datetime import date
-today = date.today()
 
 class GenreNode(DjangoObjectType):
     class Meta:
@@ -36,21 +28,6 @@ class AnimeAwardsNode(DjangoObjectType):
         interfaces = (graphene.relay.Node,)
 
 
-class AnimeStudioNode(DjangoObjectType):
-    class Meta:
-        model =  Studio
-        fields = "__all__"
-        filter_fields = "__all__"
-        interfaces = (graphene.relay.Node,)
-
-class AllWinnersNode(DjangoObjectType):
-    class Meta:
-        model = AllWinners
-        fields = "__all__"
-        filter_fields = "__all__"
-        interfaces = (graphene.relay.Node,)
-    
-
 
 class AnimeNode(DjangoObjectType):
     class Meta:
@@ -59,19 +36,10 @@ class AnimeNode(DjangoObjectType):
         filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
 
-# class VoteNode(DjangoObjectType):
-#     class Meta:
-#         model = Vote
-#         fields = "__all__"
-#         filter_fields = "__all__"
-#         interfaces = (graphene.relay.Node,)
 
 class Query(object):
     genre = graphene.relay.Node.Field(GenreNode)
     all_genres = DjangoFilterConnectionField(GenreNode)
-
-    studio = graphene.relay.Node.Field(AnimeStudioNode)
-    all_studios = DjangoFilterConnectionField(AnimeStudioNode)
 
     awards = graphene.relay.Node.Field(AwardsNode)
     all_awards = DjangoFilterConnectionField(AwardsNode)
@@ -81,152 +49,97 @@ class Query(object):
 
     anime = graphene.relay.Node.Field(AnimeNode)
     all_anime = DjangoFilterConnectionField(AnimeNode)
-    
-    winner = graphene.relay.Node.Field(AllWinnersNode)
-    all_winners = DjangoFilterConnectionField(AllWinnersNode)
-    # def resolve_winners(self, info):
-
-        
-
-    # vote = graphene.relay.Node.Field(VoteNode)
-    # all_vote = DjangoFilterConnectionField(VoteNode)
-    
-    
-    
-class userInput(graphene.InputObjectType):
-    # email = graphene.String(required = True)
-    user_id = graphene.ID()
-    # username = graphene.String(required = True)
 
 
-class animeInput(graphene.InputObjectType):
-    anime_name = graphene.String()
-    rating = graphene.Int()
-    anime_id = graphene.ID()
-    watch_status = graphene.String()
+class CreateAward(graphene.Mutation):
 
-# class awardInput(graphene.InputObjectType):
-#     award_name = graphene.String()
+    award = graphene.Field(AwardsNode)
 
-class addVote(graphene.Mutation):
     class Arguments:
-        user_data = userInput(required = True)
-        anime_data = animeInput(required = True)
-        award_name = graphene.String(required = True)
-    
-    anime_award = graphene.Field(AnimeAwardsNode)
-    
-    @staticmethod
-    def get_user(id):
-        return UserProfile.objects.get(user_id = id)
-    
-    @staticmethod
-    def get_anime(id):
-        return Anime.objects.get( anime_name = id)
-        
-    
-    @staticmethod
-    def get_award(name):
-        return Awards.objects.get(award_name = name)
-    
-    def mutate(self, info, user_data=None, anime_data=None, award_name=None):
-        user = addVote.get_user(user_data.user_id)
-        anime = addVote.get_anime(anime_data.anime_name)
-        award = addVote.get_award(award_name)
-        print(user, anime, award)
-        print("hi")
-        try:
-            try:
-                all_anime_awards = AnimeAwards.objects.filter(award__award_name = award_name)
-                print(all_anime_awards)
-                user_exist = all_anime_awards.filter(allUsers = user)
-                print(user_exist)
-                if user_exist:
-                    print("user already voted for this award")
-                    return GraphQLError("user already voted for this award")
-                
-            except Exception:
-                print("there was an error ")
-                ["award1", "blue lock"]
-            anime_award = AnimeAwards.objects.get(anime__mal_id = anime_data.anime_id, award__award_name = award_name)
-            print("This is the award:", anime_award)
-            if anime_award:
-                print("Anime exists")
-                # if user in anime_award.allUsers.all():
-                #     print("user already voted for this anime for this award")
-                #     return GraphQLError("user already voted for this anime for this award")
-                anime_award.vote_count += 1
-                anime_award.allUsers.add(user)
-                anime_award.save()
-                user.user_voted_animes.add(anime_award)
-                user.save()
-            
-        except AnimeAwards.DoesNotExist:
-            print("Anime Award does not exist and will now be created")
-            anime_award = AnimeAwards(
-                vote_count = 1,
-                anime = anime,
-                award = award,
-            )
-            # anime_award.allUsers.add(user)
-            anime_award.save()
-            anime_award.allUsers.add(user)
-            anime_award.save()
-            user.user_voted_animes.add(anime_award)
-            user.save()
-            print(anime_award)
-        return addVote(anime_award = anime_award) 
-    
-class winner(graphene.Mutation):
-    anime_awards = graphene.List(AllWinnersNode)
-    # anime = graphene.Field(AnimeNode)
-    
-    def mutate(self, info):
-        date = today
-        anime_awards = []
-        
-        all_awards = Awards.objects.all()
-        
-        for award in all_awards:
-            anime_awards.append(award)
-        
-        for anime_award in anime_awards:
-            try:
-                all_anime_awards = AnimeAwards.objects.filter(award__award_name = anime_award)
-                highest_vote_count = max(all_anime_awards, key=lambda y: y.vote_count).vote_count
-                print(highest_vote_count)
-                
-                filtered_anime_awards = all_anime_awards.filter(vote_count = highest_vote_count)
-                print(len(filtered_anime_awards))
-                for filtered_anime_award in filtered_anime_awards:
-                    # if filtered_anime_award in AllWinners.objects.all():
-                    #     return GraphQLError(f"{filtered_anime_award.anime.anime_name} has already won the {filtered_anime_award.award.award_name} award")
-                    
-                    filtered_anime_name = filtered_anime_award.anime.anime_name
-                    filtered_award_name = filtered_anime_award.award.award_name
-                    filtered_anime = Anime.objects.get(anime_name = filtered_anime_name)
-                    filtered_award = Awards.objects.get(award_name = filtered_award_name)
-                    filtered_award.date = date
-                    filtered_award.save()
-                    print(date)
-                    filtered_anime.anime_awards.add(filtered_award)
-                    filtered_anime.save()
-                    # return filtered_anime
-    
-                    AllWinners.objects.create(winner = filtered_anime_award)
-                    # print(self.all_winners)
-                    # print(filtered_anime_award, filtered_anime_name)
-                    print(f"The {filtered_award_name} Award goes to {filtered_anime_name}")
+        name = graphene.String(required=True)
 
-            except:
-                print("there is an error")
-        print(AllWinners.objects.all())
-        # FindAwardWinner = FindAwardWinner()
-        # # FindAwardWinner.determine_winner()
-        # anime_awards = FindAwardWinner.determine_winner()
-        return winner(anime_awards = AllWinners.objects.all())
-        
-    
+    def mutate(self, info, name):
+        try:
+            # if it can find an award with the given name, it will move on to the next line
+            # if not, it will jump to except
+            Awards.objects.get(award_name=name)
+
+            return GraphQLError("an award with this name already exists")
+
+        except Awards.DoesNotExist:
+            award = Awards(award_name=name)
+            award.save()
+
+        return CreateAward(award=award)
+
+class CreateAnimeAwardsObj(graphene.Mutation):
+    anime_awards = graphene.Field(AnimeAwardsNode)
+
+    class Arguments:
+        nom = graphene.Boolean(required=True)
+        nom_date = Date()
+        got = graphene.Boolean(required=True)
+        got_date = Date()
+        award_name = graphene.String(required=True)
+
+    def mutate(self, info, nom, nom_date, got, got_date, award_name):
+        anime_awards = AnimeAwards(
+            nominated_for_award=nom,
+            nominated_date=nom_date,
+            has_award=got,
+            received_date=got_date,
+            anime_award_name=Awards.objects.get(award_name=award_name),
+        )
+        # print(anime_awards.nominated_for_award)
+        # # print(anime_awards.nominated_date)
+        # # print(anime_awards.has_award)
+        # # print(anime_awards.received_date)
+        # # print(anime_awards.anime_award_name)
+        # print(anime_awards)
+
+        anime_awards.save()
+        return CreateAnimeAwardsObj(anime_awards=anime_awards)
+
+
+
+# class CreateAnimeAwardsObj(graphene.Mutation):
+#     anime_awards = graphene.Field(AnimeAwardsNode)
+#
+#     class Arguments:
+#         nom = graphene.Boolean()
+#         has = graphene.Boolean()
+#
+#     def mutate(self, info, nom, has):
+#         anime_awards_obj = AnimeAwards(nominated_for_award=nom, has_award=has)
+#         anime_awards_obj.save()
+#         print(anime_awards_obj)
+#         print("sdc")
+#         return CreateAnimeAwardsObj(anime_awards=anime_awards_obj)
+
+class AssignAnimeAwardsToAnime(graphene.Mutation):
+    anime = graphene.Field(AnimeNode)
+
+    class Arguments:
+        anime_name = graphene.String()
+        award_name = graphene.String()
+
+    def mutate(self, info, anime_name, award_name):
+
+        my_anime = Anime.objects.get(anime_name=anime_name)
+        my_anime_awards = AnimeAwards.objects.get(anime_award_name__award_name=award_name)
+        my_anime.anime_awards.add(my_anime_awards)
+        my_anime.save()
+
+        return AssignAnimeAwardsToAnime(anime=my_anime)
+
+
+
 class Mutation(graphene.ObjectType):
-    add_vote = addVote.Field()
-    winner = winner.Field()
+    create_award = CreateAward.Field()
+    create_anime_awards_obj = CreateAnimeAwardsObj.Field()
+    assign_anime_awards_to_anime = AssignAnimeAwardsToAnime.Field()
+
+
+
+
+
