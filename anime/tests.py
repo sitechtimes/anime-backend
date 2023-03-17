@@ -80,7 +80,6 @@ class AddVoteTestCase(TestCase):
     }
   }
 }
-
         '''))
 
 class FindWinnerTestCase(TestCase):

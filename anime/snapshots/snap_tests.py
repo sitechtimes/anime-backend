@@ -41,6 +41,7 @@ snapshots['FindWinnerTestCase::test_find_winner 1'] = {
         'winner': {
             'animeAwards': [
             ]
+
         }
     }
 }

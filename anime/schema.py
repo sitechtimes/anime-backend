@@ -13,6 +13,8 @@ from graphql import GraphQLError
 from datetime import date
 today = date.today()
 
+
+
 class GenreNode(DjangoObjectType):
     class Meta:
         model = Genre
@@ -34,6 +36,8 @@ class AnimeAwardsNode(DjangoObjectType):
         fields = "__all__"
         filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
+
+
 
 
 class AnimeStudioNode(DjangoObjectType):
@@ -73,6 +77,7 @@ class Query(object):
     studio = graphene.relay.Node.Field(AnimeStudioNode)
     all_studios = DjangoFilterConnectionField(AnimeStudioNode)
 
+
     awards = graphene.relay.Node.Field(AwardsNode)
     all_awards = DjangoFilterConnectionField(AwardsNode)
 
@@ -81,6 +86,7 @@ class Query(object):
 
     anime = graphene.relay.Node.Field(AnimeNode)
     all_anime = DjangoFilterConnectionField(AnimeNode)
+
     
     winner = graphene.relay.Node.Field(AllWinnersNode)
     all_winners = DjangoFilterConnectionField(AllWinnersNode)
