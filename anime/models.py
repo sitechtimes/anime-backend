@@ -1,7 +1,4 @@
 from django.db import models
-# from users.models import CustomUser
-from django.conf import settings
-from users.models import UserVotedAnime
 
 # Create your models here.
 
@@ -23,9 +20,9 @@ class Studio(models.Model):
 class Awards(models.Model):
     award_name = models.CharField(max_length=255)
     # award_img = models.ImageField() #search for more parameters
-    date = models.DateField(null=True, blank=True)
 
     def __str__(self):
+
         return self.award_name
 
 
@@ -37,7 +34,6 @@ class Character(models.Model):
 
     def __str__(self):
         return self.character_name
-
 
 class Anime(models.Model):
     mal_id = models.IntegerField(null=True)
@@ -54,6 +50,7 @@ class Anime(models.Model):
     aired_to = models.DateField(null=True)
     season = models.CharField(max_length=255, null=True)
     summary = models.TextField(null=True)
+    season = models.CharField(max_length=255,null=True)
     anime_studio = models.ManyToManyField(Studio)
     anime_genre = models.ManyToManyField(Genre)
     anime_awards = models.ManyToManyField(Awards)
@@ -61,6 +58,7 @@ class Anime(models.Model):
         null=True, default=0)  # number of ratings
     avg_rating = models.DecimalField(
         max_digits=5, decimal_places=2,  default=0)
+
 
     def __str__(self):
         return self.anime_name
@@ -89,3 +87,4 @@ class AllWinners(models.Model):
 
     def __str__(self):
         return f"{self.winner.anime.anime_name}, {self.winner.award.award_name}"
+
