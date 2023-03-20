@@ -16,6 +16,7 @@ class Studio(models.Model):
     def __str__(self):
         return self.studio
 
+
 class Awards(models.Model):
     award_name = models.CharField(max_length=255)
     # award_img = models.ImageField() #search for more parameters
@@ -23,6 +24,7 @@ class Awards(models.Model):
     def __str__(self):
 
         return self.award_name
+
 
 class Character(models.Model):
     mal_id = models.IntegerField(null=True)
@@ -46,17 +48,43 @@ class Anime(models.Model):
     status = models.CharField(max_length=255, null=True)
     aired_from = models.DateField(null=True)
     aired_to = models.DateField(null=True)
+    season = models.CharField(max_length=255, null=True)
     summary = models.TextField(null=True)
     season = models.CharField(max_length=255,null=True)
     anime_studio = models.ManyToManyField(Studio)
     anime_genre = models.ManyToManyField(Genre)
-    anime_characters = models.ManyToManyField(Character)
-    anime_awards = models.ManyToManyField(AnimeAwards)
+    anime_awards = models.ManyToManyField(Awards)
+    number_rating = models.IntegerField(
+        null=True, default=0)  # number of ratings
+    avg_rating = models.DecimalField(
+        max_digits=5, decimal_places=2,  default=0)
 
 
     def __str__(self):
         return self.anime_name
 
 
+class AnimeAwards(models.Model):
+    vote_count = models.IntegerField(default=0)
+    anime = models.ForeignKey(
+        Anime, on_delete=models.CASCADE, blank=True, null=True)
+    award = models.ForeignKey(
+        Awards, on_delete=models.CASCADE, blank=True, null=True)
+    allUsers = models.ManyToManyField("users.UserProfile")
 
+    def __str__(self):
+        return f"{self.anime.anime_name}, {self.award.award_name}"
+
+
+# class Vote(models.Model):
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+#     anime = models.ForeignKey(Anime, on_delete=models.CASCADE)
+#     award =  models.ForeignKey(Awards, on_delete=models.CASCADE)
+
+
+class AllWinners(models.Model):
+    winner = models.ForeignKey(AnimeAwards, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.winner.anime.anime_name}, {self.winner.award.award_name}"
 
