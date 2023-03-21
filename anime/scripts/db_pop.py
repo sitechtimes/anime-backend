@@ -176,7 +176,8 @@ class DBPopulate():
 
             for instance in self.response["data"]: # instance is the anime
                 self.addAnime(instance)
-                time.sleep(4)
+
+            time.sleep(4)
 
         if add_characters is True:
             self.noCharacterAnime(min_characters,min_side_characters)
