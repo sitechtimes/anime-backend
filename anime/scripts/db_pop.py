@@ -167,7 +167,7 @@ class DBPopulate():
             my_anime.anime_studio.add(Studio.objects.get(studio=studio_name))
             my_anime.save()
 
-    def initialPopulation(self, pages: int = 5, min_characters: int = 10, min_side_characters: int = 5,):
+    def initialPopulation(self, pages: int = 5, min_characters: int = 10, min_side_characters: int = 5, add_characters: bool = False):
 
         for page_num in range(1,pages+1):
 
@@ -178,7 +178,8 @@ class DBPopulate():
                 self.addAnime(instance)
                 time.sleep(4)
 
-        self.noCharacterAnime(min_characters,min_side_characters)
+        if add_characters is True:
+            self.noCharacterAnime(min_characters,min_side_characters)
 
 
     def updateAiringAnime(self, min_characters: int = 10, min_side_characters: int = 5,):
