@@ -111,7 +111,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000','http://localhost:5173', "https://anime.siths.dev", "http://anime.siths.dev"]
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000','http://localhost:6969', "https://anime.siths.dev", "http://anime.siths.dev"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
