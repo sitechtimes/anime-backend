@@ -57,8 +57,7 @@ class Anime(models.Model):
     anime_studio = models.ManyToManyField(Studio)
     anime_genre = models.ManyToManyField(Genre)
     anime_awards = models.ManyToManyField(Awards)
-    number_rating = models.IntegerField(
-        null=True, default=0)  # number of ratings
+    num_rated = models.IntegerField(default=0)  # number of ratings
     avg_rating = models.DecimalField(
         max_digits=5, decimal_places=2,  default=0)
 
