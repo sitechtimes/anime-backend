@@ -17,6 +17,16 @@ watching_status = [
     ("FINISHED_ANIME", "Finished Anime")
 ]
 
+
+class CustomUser(AbstractUser):
+    # username = models.CharField(max_length=100)
+    # grade = models.IntegerField()
+    email = models.EmailField()
+
+class UserVotedAnime(models.Model):
+    anime = models.CharField(max_length=255)
+
+
 class UserAnime(models.Model):
     anime = models.ForeignKey("anime.Anime", on_delete=models.CASCADE)
     # currently_watching = models.BooleanField()
@@ -29,13 +39,6 @@ class UserAnime(models.Model):
         return f"{self.anime.anime_name}"
 
 
-class CustomUser(AbstractUser):
-    # username = models.CharField(max_length=100)
-    # grade = models.IntegerField()
-    email = models.EmailField()
-
-class UserVotedAnime(models.Model):
-    anime = models.CharField(max_length=255)
 
 class UserProfile(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
