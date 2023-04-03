@@ -198,4 +198,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-UTH_USER_MODULE = 'users.CustomUser'
+AUTH_USER_MODULE = 'users.CustomUser'
