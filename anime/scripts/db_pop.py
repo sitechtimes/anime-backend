@@ -53,21 +53,25 @@ class DBPopulate():
                 my_from_date = None
 
             # get the season if the month the anime aired is available
-            my_month = my_from_date.month
-            match my_month:
-                case 1 | 2 | 3:
-                    my_time_of_year = "Winter"
-                case 4 | 5 | 6:
-                    my_time_of_year = "Spring"
-                case 7 | 8 | 9:
-                    my_time_of_year = "Summer"
-                case 10 | 11 | 12:
-                    my_time_of_year = "Fall"
-                case None:
-                    my_time_of_year = ""
+            if my_from_date is not None:
+                if my_from_date.month is not None:
+                    my_month = my_from_date.month
 
-            if my_time_of_year is not "":
-                my_season = f"{my_time_of_year} {my_from_date.year}"
+                    match my_month:
+                        case 1 | 2 | 3:
+                            my_time_of_year = "Winter"
+                        case 4 | 5 | 6:
+                            my_time_of_year = "Spring"
+                        case 7 | 8 | 9:
+                            my_time_of_year = "Summer"
+                        case 10 | 11 | 12:
+                            my_time_of_year = "Fall"
+                        case None:
+                            my_time_of_year = ""
+
+                    if my_time_of_year is not "":
+                        my_season = f"{my_time_of_year} {my_from_date.year}"
+
             else:
                 my_season = None
 
