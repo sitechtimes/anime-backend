@@ -59,7 +59,8 @@ class UserProfile(models.Model):
 @receiver(post_save, sender=CustomUser)
 def create_user_customer(sender, instance, created, **kwargs):
     date = datetime.date.today()
-    print(date)
+    # print(date)
+
     if created:
         try:
             print(instance.email)
