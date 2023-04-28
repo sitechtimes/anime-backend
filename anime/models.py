@@ -34,6 +34,8 @@ class Character(models.Model):
     character_name = models.CharField(max_length=255)
     role = models.CharField(max_length=255)
     image_url = models.URLField(max_length=255, null=True)
+    character_awards = models.ManyToManyField(Awards)
+    
 
     def __str__(self):
         return self.character_name
@@ -75,6 +77,18 @@ class AnimeAwards(models.Model):
 
     def __str__(self):
         return f"{self.anime.anime_name}, {self.award.award_name}"
+    
+class CharacterAwards(models.Model):
+    vote_count = models.IntegerField(default=0)
+    character = models.ForeignKey(
+        Character, on_delete=models.CASCADE, blank=True, null=True)
+    award = models.ForeignKey(
+        Awards, on_delete=models.CASCADE, blank=True, null=True)
+    allUsers = models.ManyToManyField("users.UserProfile")
+
+    def __str__(self):
+        return f"{self.character.character_name}, {self.award.award_name}"
+
 
 
 # class Vote(models.Model):

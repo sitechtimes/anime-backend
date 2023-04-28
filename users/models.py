@@ -45,6 +45,7 @@ class UserProfile(models.Model):
     created_date = models.DateField(null=True, blank=True)
     # grade = models.IntegerField()
     user_voted_animes = models.ManyToManyField("anime.AnimeAwards",  blank=True)
+    user_voted_characters = models.ManyToManyField("anime.CharacterAwards",  blank=True)
     user_anime = models.ManyToManyField(UserAnime,related_name='taken', blank=True)
     # profile_img = models.ImageField()     # need to add a media root for it to work(just search it)
     # def __str__(self) -> str:
