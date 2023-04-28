@@ -159,7 +159,7 @@ class addAnimeVote(graphene.Mutation):
             except Exception:
                 print("there was an error ")
                 ["award1", "blue lock"]
-            anime_award = AnimeAwards.objects.get(anime__mal_id = anime_data.anime_id, award__award_name = award_name)
+            anime_award = AnimeAwards.objects.get(anime__anime_name = anime_data.anime_name, award__award_name = award_name)
             print("This is the award:", anime_award)
             if anime_award:
                 print("Anime exists")
