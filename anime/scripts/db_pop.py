@@ -177,7 +177,7 @@ class DBPopulate():
             my_anime.anime_studio.add(Studio.objects.get(studio=studio_name))
             my_anime.save()
 
-    def initialPopulation(self, pages: int = 5, min_characters: int = 10, min_side_characters: int = 5, add_characters: bool = False):
+    def initialPopulation(self, pages: int = 5, min_characters: int = 10, min_side_characters: int = 5, add_characters: bool = True):
 
         for page_num in range(1, pages+1):
 

@@ -119,7 +119,7 @@ class animeInput(graphene.InputObjectType):
 # class awardInput(graphene.InputObjectType):
 #     award_name = graphene.String()
 
-class addVote(graphene.Mutation):
+class addAnimeVote(graphene.Mutation):
     class Arguments:
         user_data = userInput(required = True)
         anime_data = animeInput(required = True)
@@ -141,9 +141,9 @@ class addVote(graphene.Mutation):
         return Awards.objects.get(award_name = name)
     
     def mutate(self, info, user_data=None, anime_data=None, award_name=None):
-        user = addVote.get_user(user_data.user_id)
-        anime = addVote.get_anime(anime_data.anime_name)
-        award = addVote.get_award(award_name)
+        user = addAnimeVote.get_user(user_data.user_id)
+        anime = addAnimeVote.get_anime(anime_data.anime_name)
+        award = addAnimeVote.get_award(award_name)
         print(user, anime, award)
         print("hi")
         try:
@@ -186,7 +186,7 @@ class addVote(graphene.Mutation):
             user.user_voted_animes.add(anime_award)
             user.save()
             print(anime_award)
-        return addVote(anime_award = anime_award) 
+        return addAnimeVote(anime_award = anime_award) 
     
 class winner(graphene.Mutation):
     anime_awards = graphene.List(AllWinnersNode)
@@ -239,5 +239,5 @@ class winner(graphene.Mutation):
         
     
 class Mutation(graphene.ObjectType):
-    add_vote = addVote.Field()
+    add_anime_vote = addAnimeVote.Field()
     winner = winner.Field()
