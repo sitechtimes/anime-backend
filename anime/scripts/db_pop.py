@@ -53,21 +53,24 @@ class DBPopulate():
 
             # get the season if the month the anime aired is available
             if my_from_date is not None:
-                my_month = my_from_date.month
-                match my_month:
-                    case 1|2|3:
-                        my_time_of_year = "Winter"
-                    case 4|5|6:
-                        my_time_of_year = "Spring"
-                    case 7|8|9:
-                        my_time_of_year = "Summer"
-                    case 10|11|12:
-                        my_time_of_year = "Fall"
-                    case None:
-                        my_time_of_year = ""
+                if my_from_date.month is not None:
+                    my_month = my_from_date.month
 
-                if my_time_of_year is not "":
-                    my_season = f"{my_time_of_year} {my_from_date.year}"
+                    match my_month:
+                        case 1|2|3:
+                            my_time_of_year = "Winter"
+                        case 4|5|6:
+                            my_time_of_year = "Spring"
+                        case 7|8|9:
+                            my_time_of_year = "Summer"
+                        case 10|11|12:
+                            my_time_of_year = "Fall"
+                        case None:
+                            my_time_of_year = ""
+
+                    if my_time_of_year is not "":
+                        my_season = f"{my_time_of_year} {my_from_date.year}"
+
             else:
                 my_season = None
 
@@ -180,10 +183,10 @@ class DBPopulate():
             time.sleep(4)
 
         if add_characters is True:
-            self.noCharacterAnime(min_characters,min_side_characters)
+            self.noCharacterAnime(min_characters, min_side_characters)
 
 
-    def updateAiringAnime(self, min_characters: int = 10, min_side_characters: int = 5,):
+    def updateAiringAnime(self, min_characters: int = 10, min_side_characters: int = 5, add_characters: bool = False):
 
         # get all the anime that we have that are airing
         try:
@@ -205,11 +208,14 @@ class DBPopulate():
             self.requestAPI(api_url)
 
             for instance in self.response["data"]:
-                self.their_airing_anime.add(instance["mal_id"]) #add the anime's id to their airing anime
                 self.addAnime(instance)
-                self.update_characters_anime.add(Anime.objects.get(mal_id=instance["mal_id"])) # add the newly created anime to the update characters set
+                self.their_airing_anime.add(instance["mal_id"]) #add the anime's id to their airing anime
 
-        self.updateCharacters(self.update_characters_anime, min_characters, min_side_characters,)
+                if add_characters is True:
+                    self.update_characters_anime.add(Anime.objects.get(mal_id=instance["mal_id"])) # add the newly created anime to the update characters set
+
+        if add_characters is True:
+            self.updateCharacters(self.update_characters_anime, min_characters, min_side_characters,)
 
 
         print(f"our_airing_anime: {self.our_airing_anime}")
@@ -264,9 +270,11 @@ class DBPopulate():
 
 
     def addCharacter(self, character: dict, anime_mal_id: int):
+
+        my_character_mal_id = character["character"]["mal_id"]
+        my_character_name = character["character"]["name"]
+
         try:
-            my_character_mal_id = character["character"]["mal_id"]
-            my_character_name = character["character"]["name"]
             my_anime = Anime.objects.get(mal_id=anime_mal_id)
             my_character = Character.objects.get(mal_id=my_character_mal_id) #if it exists it will move on fine
                                                                              #if not then it will move onto except
@@ -281,6 +289,8 @@ class DBPopulate():
             )
             my_character.save()
             my_anime.anime_characters.add(my_character)
+        except Anime.DoesNotExist:
+            raise Exception("no anime with this mal id exists in our database lol")
 
 
 
