@@ -107,4 +107,4 @@ class CharacterAwardsWinner(models.Model):
     character_winner = models.ForeignKey(CharacterAwards, on_delete=models.CASCADE)
     
     def __str__(self):
-        return f"{self.winner.character.character_name}, {self.winner.award.award_name}"
+        return f"{self.character_winner.character.character_name}, {self.character_winner.award.award_name}"
