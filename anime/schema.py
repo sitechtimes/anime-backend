@@ -1,7 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-from anime.models import Anime, Genre, Awards, AnimeAwards, AllWinners, Studio, Character, CharacterAwards
+from anime.models import Anime, Genre, Awards, AnimeAwards, AllWinners, Studio, Character, CharacterAwards, CharacterAwardsWinner
 from users.models import UserProfile
 # from users.models import CustomUser
 from django.conf import settings
@@ -55,6 +55,13 @@ class AllWinnersNode(DjangoObjectType):
         fields = "__all__"
         filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
+        
+class CharacterAwardsWinnerNode(DjangoObjectType):
+    class Meta:
+        model = CharacterAwardsWinner
+        fields = "__all__"
+        filter_fields = "__all__"
+        interfaces = (graphene.relay.Node,)
     
 
 
@@ -98,6 +105,9 @@ class Query(object):
 
     anime = graphene.relay.Node.Field(AnimeNode)
     all_anime = DjangoFilterConnectionField(AnimeNode)
+    
+    character_winner = graphene.relay.Node.Field(CharacterAwardsWinnerNode)
+    all_character_winners = DjangoFilterConnectionField(CharacterAwardsWinnerNode)
     
     winner = graphene.relay.Node.Field(AllWinnersNode)
     all_winners = DjangoFilterConnectionField(AllWinnersNode)
@@ -269,6 +279,7 @@ class addCharacterVote(graphene.Mutation):
     
 class winner(graphene.Mutation):
     anime_awards = graphene.List(AllWinnersNode)
+    character_awards = graphene.List(CharacterAwardsWinnerNode)
     # anime = graphene.Field(AnimeNode)
     
     def mutate(self, info):
@@ -282,31 +293,61 @@ class winner(graphene.Mutation):
         
         for anime_award in anime_awards:
             try:
-                all_anime_awards = AnimeAwards.objects.filter(award__award_name = anime_award)
-                highest_vote_count = max(all_anime_awards, key=lambda y: y.vote_count).vote_count
-                print(highest_vote_count)
-                
-                filtered_anime_awards = all_anime_awards.filter(vote_count = highest_vote_count)
-                print(len(filtered_anime_awards))
-                for filtered_anime_award in filtered_anime_awards:
-                    # if filtered_anime_award in AllWinners.objects.all():
-                    #     return GraphQLError(f"{filtered_anime_award.anime.anime_name} has already won the {filtered_anime_award.award.award_name} award")
+                if "Character" in str(anime_award):
+                     all_character_awards = CharacterAwards.objects.filter(award__award_name = anime_award)
+                     highest_vote_count = max(all_character_awards, key=lambda y: y.vote_count).vote_count
+                     print(highest_vote_count)
                     
-                    filtered_anime_name = filtered_anime_award.anime.anime_name
-                    filtered_award_name = filtered_anime_award.award.award_name
-                    filtered_anime = Anime.objects.get(anime_name = filtered_anime_name)
-                    filtered_award = Awards.objects.get(award_name = filtered_award_name)
-                    filtered_award.date = date
-                    filtered_award.save()
-                    print(date)
-                    filtered_anime.anime_awards.add(filtered_award)
-                    filtered_anime.save()
-                    # return filtered_anime
-    
-                    AllWinners.objects.create(winner = filtered_anime_award)
-                    # print(self.all_winners)
-                    # print(filtered_anime_award, filtered_anime_name)
-                    print(f"The {filtered_award_name} Award goes to {filtered_anime_name}")
+                     filtered_character_awards = all_character_awards.filter(vote_count = highest_vote_count)
+                    #  print(len(filtered_anime_awards))
+                     for filtered_character_award in filtered_character_awards:
+                        # if filtered_anime_award in AllWinners.objects.all():
+                        #     return GraphQLError(f"{filtered_anime_award.anime.anime_name} has already won the {filtered_anime_award.award.award_name} award")
+                        
+                        filtered_character_name = filtered_character_award.character.character_name
+                        filtered_award_name = filtered_character_award.award.award_name
+                        filtered_character = Character.objects.get(character_name = filtered_character_name)
+                        filtered_award = Awards.objects.get(award_name = filtered_award_name)
+                        filtered_award.date = date
+                        filtered_award.save()
+                        print(date)
+                        filtered_character.character_awards.add(filtered_award)
+                        filtered_character.save()
+                        # return filtered_anime
+        
+                        CharacterAwardsWinner.objects.create(character_winner = filtered_character_award)
+                        # print(self.all_winners)
+                        # print(filtered_anime_award, filtered_anime_name)
+                        # print(f"The {filtered_award_name} Award goes to {filtered_anime_name}")
+                    
+                        print(anime_award, "character award")
+                else:
+                    print(anime_award, "anime award")
+                    all_anime_awards = AnimeAwards.objects.filter(award__award_name = anime_award)
+                    highest_vote_count = max(all_anime_awards, key=lambda y: y.vote_count).vote_count
+                    print(highest_vote_count)
+                    
+                    filtered_anime_awards = all_anime_awards.filter(vote_count = highest_vote_count)
+                    print(len(filtered_anime_awards))
+                    for filtered_anime_award in filtered_anime_awards:
+                        # if filtered_anime_award in AllWinners.objects.all():
+                        #     return GraphQLError(f"{filtered_anime_award.anime.anime_name} has already won the {filtered_anime_award.award.award_name} award")
+                        
+                        filtered_anime_name = filtered_anime_award.anime.anime_name
+                        filtered_award_name = filtered_anime_award.award.award_name
+                        filtered_anime = Anime.objects.get(anime_name = filtered_anime_name)
+                        filtered_award = Awards.objects.get(award_name = filtered_award_name)
+                        filtered_award.date = date
+                        filtered_award.save()
+                        print(date)
+                        filtered_anime.anime_awards.add(filtered_award)
+                        filtered_anime.save()
+                        # return filtered_anime
+        
+                        AllWinners.objects.create(winner = filtered_anime_award)
+                        # print(self.all_winners)
+                        # print(filtered_anime_award, filtered_anime_name)
+                        print(f"The {filtered_award_name} Award goes to {filtered_anime_name}")
 
             except:
                 print("there is an error")
@@ -314,7 +355,7 @@ class winner(graphene.Mutation):
         # FindAwardWinner = FindAwardWinner()
         # # FindAwardWinner.determine_winner()
         # anime_awards = FindAwardWinner.determine_winner()
-        return winner(anime_awards = AllWinners.objects.all())
+        return winner(anime_awards = AllWinners.objects.all(), character_awards = CharacterAwardsWinner.objects.all())
         
     
 class Mutation(graphene.ObjectType):
