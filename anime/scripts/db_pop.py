@@ -11,7 +11,6 @@ class DBPopulate():
         self.base_airing_api_url = "https://api.jikan.moe/v4/anime?status=airing"
         self.our_airing_anime = set()
         self.their_airing_anime = set()
-        self.update_characters_anime = set()
         self.response = None
 
     def requestAPI(self, api_url):
@@ -207,15 +206,17 @@ class DBPopulate():
             api_url = f"{self.base_airing_api_url}&page={page_num}"
             self.requestAPI(api_url)
 
+            update_characters_anime = []
+
             for instance in self.response["data"]:
                 self.addAnime(instance)
                 self.their_airing_anime.add(instance["mal_id"]) #add the anime's id to their airing anime
 
                 if add_characters is True:
-                    self.update_characters_anime.add(Anime.objects.get(mal_id=instance["mal_id"])) # add the newly created anime to the update characters set
+                    update_characters_anime.add(Anime.objects.get(mal_id=instance["mal_id"])) # add the newly created anime to the update characters set
 
         if add_characters is True:
-            self.updateCharacters(self.update_characters_anime, min_characters, min_side_characters,)
+            self.updateCharacters(update_characters_anime, min_characters, min_side_characters,)
 
 
         print(f"our_airing_anime: {self.our_airing_anime}")
@@ -247,7 +248,6 @@ class DBPopulate():
                     self.addCharacter(character, my_mal_id)
                 else:
                     supporting_index_favorites[self.response["data"].index(character)] = character["favorites"] # add a key value pair to the dictionary {(character mal id): (number of favorites)}
-
             sorted_supporting_index_favorites = dict(sorted(supporting_index_favorites.items(), key=lambda x:x[1], reverse=True)) # sort the dictionary by descending order of favorites
             print(f"SORTED: {sorted_supporting_index_favorites}")
 
