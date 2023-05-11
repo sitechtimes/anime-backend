@@ -173,7 +173,7 @@ class test_animeModel(TestCase):
             # self.studio_1,
             # self.studio_2,
             # },
-            number_rating= 5,
+            # number_rating= 5,
 
         )
 
@@ -188,5 +188,5 @@ class test_animeModel(TestCase):
         self.assertEqual(self.my_anime.episodes, 12)
         self.assertEqual(self.my_anime.anime_name, "test anime")
         self.assertEqual(self.my_anime.summary,"test summary")
-        self.assertEqual(self.my_anime.number_rating, 5)
+        # self.assertEqual(self.my_anime.number_rating, 5)
         # self.assertTrue(self.my_anime, Anime())

@@ -9,7 +9,7 @@ from django.urls import path, include
 from .middleware import DRFAuthenticatedGraphQLView
 from socialLogin.views import GoogleLogin
 from django.contrib.auth.views import LogoutView
-from anime.views import AnimeView
+from anime.views import AnimeView, GenreView
 # from anime.schema import schema
 
 urlpatterns = [
@@ -18,7 +18,8 @@ urlpatterns = [
     path('social-login/google/', GoogleLogin.as_view(), name='google_login'),
     path('auth/', include('dj_rest_auth.urls')),
     path("graphql/", DRFAuthenticatedGraphQLView.as_view(graphiql=True)),
-     path('anime/', AnimeView.as_view()),
+    path('anime/', AnimeView.as_view()),
+    path("genres/", GenreView.as_view())
     # path('logout/', LogoutView.as_view()),
 
 ]
