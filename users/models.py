@@ -17,6 +17,16 @@ watching_status = [
     ("FINISHED_ANIME", "Finished Anime")
 ]
 
+
+class CustomUser(AbstractUser):
+    # username = models.CharField(max_length=100)
+    # grade = models.IntegerField()
+    email = models.EmailField()
+
+class UserVotedAnime(models.Model):
+    anime = models.CharField(max_length=255)
+
+
 class UserAnime(models.Model):
     anime = models.ForeignKey("anime.Anime", on_delete=models.CASCADE)
     # currently_watching = models.BooleanField()
@@ -29,19 +39,13 @@ class UserAnime(models.Model):
         return f"{self.anime.anime_name}"
 
 
-class CustomUser(AbstractUser):
-    # username = models.CharField(max_length=100)
-    # grade = models.IntegerField()
-    email = models.EmailField()
-
-class UserVotedAnime(models.Model):
-    anime = models.CharField(max_length=255)
 
 class UserProfile(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_date = models.DateField(null=True, blank=True)
     # grade = models.IntegerField()
     user_voted_animes = models.ManyToManyField("anime.AnimeAwards",  blank=True)
+    user_voted_characters = models.ManyToManyField("anime.CharacterAwards",  blank=True)
     user_anime = models.ManyToManyField(UserAnime,related_name='taken', blank=True)
     # profile_img = models.ImageField()     # need to add a media root for it to work(just search it)
     # def __str__(self) -> str:
@@ -56,7 +60,8 @@ class UserProfile(models.Model):
 @receiver(post_save, sender=CustomUser)
 def create_user_customer(sender, instance, created, **kwargs):
     date = datetime.date.today()
-    print(date)
+    # print(date)
+
     if created:
         try:
             print(instance.email)

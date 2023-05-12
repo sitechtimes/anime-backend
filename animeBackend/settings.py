@@ -26,9 +26,9 @@ load_dotenv()
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['anime.siths.dev', '.localhost', '127.0.0.1', '[::1]']
 
 
 # Application definition
@@ -111,6 +111,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000','http://localhost:6969', "https://anime.siths.dev", "http://anime.siths.dev"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
@@ -197,4 +198,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-UTH_USER_MODULE = 'users.CustomUser'
+AUTH_USER_MODULE = 'users.CustomUser'

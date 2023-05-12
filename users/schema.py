@@ -59,7 +59,7 @@ class userAnimeInput(graphene.InputObjectType):
     # user_anime_id = graphene.ID(required = True)
     rating = graphene.Int()
     watch_status = graphene.String()
-    anime_name = graphene.String(required=True)
+    # anime_name = graphene.String(required=True)
 
 
 class addUserAnime(graphene.Mutation):
@@ -75,6 +75,7 @@ class addUserAnime(graphene.Mutation):
     def get_anime(id):
         return Anime.objects.get(mal_id=id)
 
+
     @staticmethod
     def get_user(id):
         return UserProfile.objects.get(user_id=id)
@@ -82,13 +83,6 @@ class addUserAnime(graphene.Mutation):
     def mutate(self, info, user_data=None, anime_data=None):
         anime = addUserAnime.get_anime(anime_data.anime_id)
         user = addUserAnime.get_user(user_data.user_id)
-        # user_anime_exist = UserAnime.objects.filter(anime = anime, user = user)
-        # if user_anime_exist:
-        #     return GraphQLError("you already submitted response, you need to edit it")
-        # user = UserProfile.objects.create(
-        #     user = CustomUser.objects.create(email = "ps@pls.com", username = "sdcfgdfgwerdfs")
-        # )
-        # user.save()
 
         if anime_data.rating and anime_data.watch_status:
             if anime_data.rating > 10 or anime_data.rating < 0:
@@ -102,11 +96,16 @@ class addUserAnime(graphene.Mutation):
             user_anime.save()
             user.user_anime.add(user_anime)
             user.save()
-            initial_rating = anime.number_rating
-            rating_number = initial_rating + 1
-            anime.number_rating = rating_number
+            user.user_anime.add(user_anime)
+            user.save()
+
+            total_num_rated = anime.num_rated + 1
+            anime.num_rated =  total_num_rated 
+            new_avg_rated = (anime.avg_rating +  anime_data.rating) / total_num_rated
+            anime.avg_rating = new_avg_rated
             anime.save()
-            print(anime.number_rating)
+
+
         elif anime_data.rating:
             if anime_data.rating > 10 or anime_data.rating < 0:
                     return GraphQLError("rating needs to be between 0-10")
@@ -115,14 +114,17 @@ class addUserAnime(graphene.Mutation):
                     rating = anime_data.rating,
                     # watching_status = anime_data.watch_status
                 )
+            
             user_anime.save()
             user.user_anime.add(user_anime)
             user.save()
-            initial_rating = anime.number_rating
-            rating_number = initial_rating + 1
-            anime.number_rating = rating_number
+            total_num_rated = anime.num_rated + 1
+            anime.num_rated =  total_num_rated 
+            new_avg_rated = (anime.avg_rating +  anime_data.rating) / total_num_rated
+            anime.avg_rating = new_avg_rated
             anime.save()
-            print(anime.number_rating)
+
+            print(anime.avg_rating)
         elif anime_data.watch_status:
             user_anime = UserAnime(
                     anime = anime,
@@ -138,12 +140,18 @@ class addUserAnime(graphene.Mutation):
 
 
 class updateUserAnime(graphene.Mutation):
+    @staticmethod
+    def get_anime(name):
+        return Anime.objects.get(anime_name=name)
+
+
     class Arguments:
         user_data = userInput(required = True)
         user_anime_data = userAnimeInput(required = True)
     
     user_anime = graphene.Field(UserAnimeNode)
     user = graphene.Field(UserProfileNode)
+
     # anime = graphene.Field(AnimeNode)
     
     # @staticmethod
@@ -158,9 +166,16 @@ class updateUserAnime(graphene.Mutation):
         # anime = addRating.get_anime(anime_data.anime_id)
         user = updateUserAnime.get_user(user_data.user_id)
         user_anime = user.user_anime.get(anime__anime_name = user_anime_data.anime_name)
+        anime =  addUserAnime.get_anime( user_anime_data.anime_name)
+        print(user_anime_data.anime_name)
+
         
         if user_anime_data.rating:
+            anime.avg_rating =((anime.avg_rating -  user_anime.rating) + user_anime_data.rating)/anime.num_rated          
+            anime.save()
             user_anime.rating = user_anime_data.rating
+           
+            
         
         if user_anime_data.watch_status:
             user_anime.watching_status = user_anime_data.watch_status
@@ -170,81 +185,128 @@ class updateUserAnime(graphene.Mutation):
         # if user_anime == "":
         #     return GraphQLError("User anime does not exit")
         # user_anime = UserAnime.objects.filter(user_set__name = "johnson")
-        print(user_anime)
+
         # print(UserAnime.objects.filter(anime_id = 1))
  
-        return updateUserAnime(user=user, user_anime=user_anime) 
-    
-# class updateUserAnime(graphene.Mutation):
-#     class Arguments:
-#         user_data = userInput(required = True)
-#         user_anime_data = userAnimeInput(required = True)
-        
-#     user = graphene.Field(UserProfileNode)
-#     user_anime = graphene.Field(UserAnimeNode)
-    
-#     # @staticmethod
-#     # def get_user_anime(id):
-#     #     return UserAnime.objects.get(pk = id)
-    
-#     @staticmethod
-#     def get_user(id):
-#         return UserProfile.objects.get(user_id = id)
-    
-    
-#     def mutate(self, info, user_data=None, anime_data=None):
-#         # user_anime = updateUserAnime.get_user_anime(1)
-#         # user = updateUserAnime.get_user(user_data.user_id)
-        
-#         user = UserProfile.objects.get(user_id=60)
-
-
-#         return updateUserAnime(user=user)
+        return updateUserAnime(user=user, user_anime=user_anime, anime=anime) 
     
 
-class CreateUser(graphene.Mutation):
 
-    user = graphene.Field(UserNode)
 
+class UserAnimeMutation(graphene.Mutation):
     class Arguments:
-        username = graphene.String(required=True)
-        email = graphene.String(required=True)
-        password = graphene.String(required=True)
+        user_data = userInput(required=True)
+        anime_data = animeInput(required=True)
+        user_anime_data = userAnimeInput(required = True)
+    
 
-    def mutate(self, info, username, password, email):
-        user = get_user_model()(
-            username= username,
-            email=email,
-            password=password
-        )
-        user.set_password(password)
-        user.save()
+    user_anime = graphene.Field(UserAnimeNode)
+    user = graphene.Field(UserProfileNode)
+    anime = graphene.Field(AnimeNode)
 
-        return CreateUser(user=user)
+    @staticmethod
+    def get_anime(id):
+        return Anime.objects.get(mal_id=id)
 
-# class CreateUserProfile(graphene.Mutation):
-#
-#     user_profile = graphene.Field( UserProfileNode)
-#
-#     class Arguments:
-#         username = graphene.String(required=True)
-#         email = graphene.String(required=True)
-#         password = graphene.String(required=True)
-#
-#     def mutate(self, info, username, password, email):
-#         user = get_user_model()(
-#             username= username,
-#             email=email,
-#             password=password
-#         )
-#         user.set_password(password)
-#         user.save()
-#
-#         return CreateUser(user=user)
+
+    @staticmethod
+    def get_user(id):
+        return UserProfile.objects.get(user_id=id)
+
+    def mutate(self, info, user_data=None, anime_data=None, user_anime_data=None):
+        anime = addUserAnime.get_anime(anime_data.anime_id)
+        user = addUserAnime.get_user(user_data.user_id)
+        
+        
+        try:
+ 
+            user_anime = user.user_anime.get(anime__mal_id = anime.mal_id)
+            print("user anime exists")
+                
+            if user_anime_data.rating:
+                anime.avg_rating =((anime.avg_rating * anime.num_rated - user_anime.rating) + user_anime_data.rating)/anime.num_rated          
+                anime.save()
+                user_anime.rating = user_anime_data.rating
+                user_anime.save()
+            
+            
+        
+            if user_anime_data.watch_status:
+                user_anime.watching_status = user_anime_data.watch_status
+            
+                user_anime.save()
+        
+        # if user_anime == "":
+        #     return GraphQLError("User anime does not exit")
+        # user_anime = UserAnime.objects.filter(user_set__name = "johnson")
+
+        # print(UserAnime.objects.filter(anime_id = 1))
+ 
+            return UserAnimeMutation(user=user, user_anime=user_anime, anime=anime) 
+        except Exception:
+            print("anime does not exist and will be created")
+            #i feel likle you can cut this down to only if-statements
+            if user_anime_data.rating and user_anime_data.watch_status:
+                if user_anime_data.rating > 10 or user_anime_data.rating < 0:
+                    return GraphQLError("rating needs to be between 0-10")
+                print(user_anime_data.watch_status)
+                user_anime = UserAnime(
+                        anime = anime,
+                        rating = user_anime_data.rating,
+                        watching_status = user_anime_data.watch_status
+                    )
+                user_anime.save()
+                user.user_anime.add(user_anime)
+                user.save()
+                user.user_anime.add(user_anime)
+                user.save()
+
+                total_num_rated = anime.num_rated + 1
+                anime.num_rated =  total_num_rated 
+                new_avg_rated = (anime.avg_rating +  user_anime_data.rating) / total_num_rated
+                anime.avg_rating = new_avg_rated
+                anime.save()
+
+
+            elif user_anime_data.rating:
+                if user_anime_data.rating > 10 or user_anime_data.rating < 0:
+                        return GraphQLError("rating needs to be between 0-10")
+                user_anime = UserAnime(
+                        anime = anime,
+                        rating = user_anime_data.rating,
+                        # watching_status = anime_data.watch_status
+                    )
+                
+                user_anime.save()
+                user.user_anime.add(user_anime)
+                user.save()
+                total_num_rated = anime.num_rated + 1
+                anime.num_rated =  total_num_rated 
+                new_avg_rated = (anime.avg_rating +  user_anime_data.rating) / total_num_rated
+                anime.avg_rating = new_avg_rated
+                anime.save()
+
+                print(anime.avg_rating)
+            elif user_anime_data.watch_status:
+                user_anime = UserAnime(
+                        anime = anime,
+                        # rating = null,
+                        watching_status = user_anime_data.watch_status
+                    )
+                user_anime.save()
+                user.user_anime.add(user_anime)
+                user.save()
+            return UserAnimeMutation(user=user, user_anime=user_anime, anime=anime)
+            
+
+        
+      
+
+
 
 
 
 class Mutation(graphene.ObjectType):
-    create_user = CreateUser.Field()
-    add_user_anime = addUserAnime.Field()
-    update_user_anime = updateUserAnime.Field()
+    # add_user_anime = addUserAnime.Field()
+    # update_user_anime = updateUserAnime.Field()
+    user_anime_mutation = UserAnimeMutation.Field()
