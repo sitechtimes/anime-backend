@@ -179,7 +179,7 @@ class DBPopulate():
             for instance in self.response["data"]: # instance is the anime
                 self.addAnime(instance)
 
-            time.sleep(4)
+            time.sleep(1)
 
         if add_characters is True:
             self.noCharacterAnime(min_characters, min_side_characters)
@@ -201,7 +201,7 @@ class DBPopulate():
 
         page_count = self.response["pagination"]["last_visible_page"]
         for page_num in range(1, (page_count+1)):
-            time.sleep(4)
+            time.sleep(1)
 
             api_url = f"{self.base_airing_api_url}&page={page_num}"
             self.requestAPI(api_url)
@@ -263,7 +263,7 @@ class DBPopulate():
                 side_character = self.response["data"][character_index] # find the character that corresponds to the given index
                 self.addCharacter(side_character, my_mal_id) # add that character
 
-            time.sleep(4)
+            time.sleep(1)
 
 
 
