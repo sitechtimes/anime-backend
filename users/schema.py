@@ -41,10 +41,12 @@ class Query(object):
     user_profile = graphene.relay.Node.Field(UserProfileNode)
     all_users = DjangoFilterConnectionField(UserProfileNode)
     
-    user = graphene.Field(UserProfileNode, id = graphene.ID())
+    user_anime_data = graphene.Field(UserProfileNode, id = graphene.ID())
     
-    def resolve_user(root, info, id):
-        return UserProfile.objects.get(user_id=id)
+    def resolve_user_anime_data(root, info, id):
+        user = UserProfile.objects.get(user_id=id)
+        # user_anime = user.filter(user_anime__anime__anime_name = anime_name)
+        return user
 
 
 class userInput(graphene.InputObjectType):
