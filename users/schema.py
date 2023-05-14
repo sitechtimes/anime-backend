@@ -43,10 +43,15 @@ class Query(object):
     
     user_anime_data = graphene.Field(UserProfileNode, id = graphene.ID())
     
+    specific_user_anime = graphene.List(UserAnimeNode, id = graphene.ID())
+    
     def resolve_user_anime_data(root, info, id):
         user = UserProfile.objects.get(user_id=id)
         # user_anime = user.filter(user_anime__anime__anime_name = anime_name)
         return user
+    def resolve_specific_user_anime(root, info, id):
+        user_anime = UserAnime.objects.filter(anime__mal_id = id)
+        return user_anime
 
 
 class userInput(graphene.InputObjectType):
