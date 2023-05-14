@@ -40,6 +40,11 @@ class Query(object):
 
     user_profile = graphene.relay.Node.Field(UserProfileNode)
     all_users = DjangoFilterConnectionField(UserProfileNode)
+    
+    user = graphene.Field(UserProfileNode, id = graphene.ID())
+    
+    def resolve_user(root, info, id):
+        return UserProfile.objects.get(user_id=id)
 
 
 class userInput(graphene.InputObjectType):
