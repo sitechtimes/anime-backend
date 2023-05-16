@@ -113,9 +113,10 @@ class Query(object):
     all_winners = DjangoFilterConnectionField(AllWinnersNode)
     
     character = graphene.relay.Node.Field(CharacterNode)
-    all_characters = DjangoFilterConnectionField(CharacterNode)
+    all_characters = graphene.List(CharacterNode)
     # def resolve_winners(self, info):
-    # def resolve_characters()
+    def resolve_all_characters(root, info):
+        return Character.objects.all()
         
 
     # vote = graphene.relay.Node.Field(VoteNode)
