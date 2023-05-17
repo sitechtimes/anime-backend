@@ -18,6 +18,10 @@ djangorestframework-simplejwt = "^5.2.2"
 python-dotenv = "^0.21.0"
 dj-rest-auth = "2.2.5"
 snapshottest = "^0.6.0"
+dj-database-url = "^2.0.0"
+psycopg2-binary = "^2.9.6"
+whitenoise = {extras = ["brotli"], version = "^6.4.0"}
+gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 
