@@ -236,21 +236,40 @@ class UserAnimeMutation(graphene.Mutation):
             print(user_anime_data.rating, user_anime_data.watch_status)
             print("user anime exists")
                 
-            # if user_anime_data.rating:
-            #     if user_anime.rating == None:
-            #         user_anime.rating = user_anime_data.rating
-            #         user_anime.save()
-            #         new_avg = (anime.avg_rating + user_anime_data.rating) / anime.num_rated
-            #         anime.avg_rating = new_avg
-            #         anime.save()
-            #         print("sdcsdcsdc")
-            #         print(anime.avg_rating, anime.num_rated, user_anime.rating)
-            #     else:
+            if user_anime_data.rating:
+                try:
+                    anime.avg_rating =((anime.avg_rating * anime.num_rated - user_anime.rating) + user_anime_data.rating)/anime.num_rated          
+                    anime.save()
+                    user_anime.rating = user_anime_data.rating
+                    user_anime.save()
+                except Exception:
+                    print("sdcsdcsdc")
+                    print(anime.avg_rating, anime.num_rated, user_anime.rating)
+                    user_anime.rating = user_anime_data.rating
+                    print(user_anime.rating, anime.num_rated)
+                    total_num_rated = anime.num_rated + 1
+                    anime.num_rated = total_num_rated
+                    anime.save()
+                    user_anime.save()
+                    new_avg = (anime.avg_rating + user_anime_data.rating) / total_num_rated
+                    anime.avg_rating = new_avg
+                    anime.save()
+                    
+                # if user_anime.rating == None:
+                    # print("sdcsdcsdc")
+                    # print(anime.avg_rating, anime.num_rated, user_anime.rating)
+                    # user_anime.rating = user_anime_data.rating
+                    # user_anime.save()
+                    # new_avg = (anime.avg_rating + user_anime_data.rating) / anime.num_rated
+                    # anime.avg_rating = new_avg
+                    # anime.save()
+ 
+                # else:
                 
-            #         anime.avg_rating =((anime.avg_rating * anime.num_rated - user_anime.rating) + user_anime_data.rating)/anime.num_rated          
-            #         anime.save()
-            #         user_anime.rating = user_anime_data.rating
-            #         user_anime.save()
+                    # anime.avg_rating =((anime.avg_rating * anime.num_rated - user_anime.rating) + user_anime_data.rating)/anime.num_rated          
+                    # anime.save()
+                    # user_anime.rating = user_anime_data.rating
+                    # user_anime.save()
                 
          
             
