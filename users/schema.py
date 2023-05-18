@@ -276,6 +276,15 @@ class UserAnimeMutation(graphene.Mutation):
             
         
             if user_anime_data.watch_status:
+                if user_anime_data.watch_status == "CURRENTLY_WATCHING" and user_anime.watching_status != "CURRENTLY_WATCHING":
+                    currently_watching = anime.currently_watching + 1
+                    anime.currently_watching = currently_watching
+                    anime.save()
+                if user_anime_data.watch_status != "CURRENTLY_WATCHING" and user_anime.watching_status == "CURRENTLY_WATCHING":  
+                    currently_watching = anime.currently_watching - 1
+                    anime.currently_watching = currently_watching
+                    anime.save()
+                
                 user_anime.watching_status = user_anime_data.watch_status
             
                 user_anime.save()
@@ -310,6 +319,9 @@ class UserAnimeMutation(graphene.Mutation):
                 new_avg_rated = (anime.avg_rating +  user_anime_data.rating) / total_num_rated
                 anime.avg_rating = new_avg_rated
                 anime.save()
+                if user_anime_data.watch_status == "CURRENTLY_WATCHING":
+                    anime.currently_watching += 1
+                    anime.save()
 
 
             elif user_anime_data.rating:
@@ -340,6 +352,10 @@ class UserAnimeMutation(graphene.Mutation):
                 user_anime.save()
                 user.user_anime.add(user_anime)
                 user.save()
+                if user_anime_data.watch_status == "CURRENTLY_WATCHING":    
+                    anime.currently_watching += 1
+                    anime.save()
+                
             return UserAnimeMutation(user=user, user_anime=user_anime, anime=anime)
             
 

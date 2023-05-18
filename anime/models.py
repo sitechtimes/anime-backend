@@ -62,6 +62,7 @@ class Anime(models.Model):
     num_rated = models.IntegerField(default=0)  # number of ratings
     avg_rating = models.DecimalField(
         max_digits=5, decimal_places=2,  default=0)
+    currently_watching = models.IntegerField(default=0)
 
     def __str__(self):
         return self.anime_name
