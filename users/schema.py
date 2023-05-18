@@ -231,15 +231,28 @@ class UserAnimeMutation(graphene.Mutation):
         
         
         try:
- 
+            print(anime, user.user_anime, anime.mal_id)
             user_anime = user.user_anime.get(anime__mal_id = anime.mal_id)
+            print(user_anime_data.rating, user_anime_data.watch_status)
             print("user anime exists")
                 
-            if user_anime_data.rating:
-                anime.avg_rating =((anime.avg_rating * anime.num_rated - user_anime.rating) + user_anime_data.rating)/anime.num_rated          
-                anime.save()
-                user_anime.rating = user_anime_data.rating
-                user_anime.save()
+            # if user_anime_data.rating:
+            #     if user_anime.rating == None:
+            #         user_anime.rating = user_anime_data.rating
+            #         user_anime.save()
+            #         new_avg = (anime.avg_rating + user_anime_data.rating) / anime.num_rated
+            #         anime.avg_rating = new_avg
+            #         anime.save()
+            #         print("sdcsdcsdc")
+            #         print(anime.avg_rating, anime.num_rated, user_anime.rating)
+            #     else:
+                
+            #         anime.avg_rating =((anime.avg_rating * anime.num_rated - user_anime.rating) + user_anime_data.rating)/anime.num_rated          
+            #         anime.save()
+            #         user_anime.rating = user_anime_data.rating
+            #         user_anime.save()
+                
+         
             
             
         
