@@ -12,12 +12,12 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='anime',
-            name='aired',
-            field=models.DateField(null=True),
+            name='status',
+            field=models.BooleanField(null=True),
         ),
         migrations.AlterField(
             model_name='anime',
-            name='status',
-            field=models.BooleanField(null=True),
+            name='aired',
+            field=models.DateField(null=True),
         ),
     ]
