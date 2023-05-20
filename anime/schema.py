@@ -114,10 +114,16 @@ class Query(object):
     
     character = graphene.relay.Node.Field(CharacterNode)
     all_characters = graphene.List(CharacterNode)
+    
+    sorted_currently_watching = graphene.List(AnimeNode)
     # def resolve_winners(self, info):
     def resolve_all_characters(root, info):
         return Character.objects.all()
         
+    def resolve_sorted_currently_watching(root, info) :
+        allAnimes = Anime.objects.all()
+        sorted_anime = sorted(allAnimes, key=lambda x: x.currently_watching, reverse=True)
+        return sorted_anime[:10]
 
     # vote = graphene.relay.Node.Field(VoteNode)
     # all_vote = DjangoFilterConnectionField(VoteNode)
