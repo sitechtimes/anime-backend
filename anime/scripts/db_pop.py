@@ -306,4 +306,4 @@ class DBPopulate():
 
 DBPopulate = DBPopulate()
 
-DBPopulate.initialPopulation(pages=300)
+DBPopulate.initialPopulation(pages=7)
