@@ -11,6 +11,12 @@ class DBPopulate():
         self.base_airing_api_url = "https://api.jikan.moe/v4/anime?status=airing"
         self.our_airing_anime = set()
         self.their_airing_anime = set()
+<<<<<<< Updated upstream
+=======
+        self.update_characters_anime = set()
+        self.inappropriate_ratings = ["Rx - Hentai", "R+ - Mild Nudity"]
+        self.inappropriate_genres = ["Ecchi", "Erotica", "Hentai"]
+>>>>>>> Stashed changes
         self.response = None
 
     def requestAPI(self, api_url):
@@ -33,9 +39,17 @@ class DBPopulate():
 
             # if the rating is not school appropriate
                 # move on to the next anime, don't add it
-            if anime_instance["rating"] == "Rx - Hentai" or anime_instance["rating"] == "R+ - Mild Nudity":
+            if anime_instance["rating"] in self.inappropriate_ratings:
                 print(f"not school appropriate: {my_anime_name}")
                 return
+
+            # create a list of the names of the anime's genres
+            genre_list = []
+            for genre in anime_instance["genres"]:
+                if genre in self.inappropriate_genres:
+                    print(f"not school appropriate: {my_anime_name}")
+                    return
+                genre_list.append(genre["name"])
 
             # if the anime is not popular enough
                 # move on to the next anime, don't add it
@@ -125,10 +139,6 @@ class DBPopulate():
             )
             my_anime.save()
 
-        # create a list of the names of the anime's genres
-        genre_list = []
-        for genre in anime_instance["genres"]:
-            genre_list.append(genre["name"])
 
         # for every name in the genre list
         for genre_name in genre_list:
