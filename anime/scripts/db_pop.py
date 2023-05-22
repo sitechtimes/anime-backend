@@ -11,12 +11,9 @@ class DBPopulate():
         self.base_airing_api_url = "https://api.jikan.moe/v4/anime?status=airing"
         self.our_airing_anime = set()
         self.their_airing_anime = set()
-<<<<<<< Updated upstream
-=======
         self.update_characters_anime = set()
         self.inappropriate_ratings = ["Rx - Hentai", "R+ - Mild Nudity"]
         self.inappropriate_genres = ["Ecchi", "Erotica", "Hentai"]
->>>>>>> Stashed changes
         self.response = None
 
     def requestAPI(self, api_url):
