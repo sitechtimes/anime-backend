@@ -8,5 +8,5 @@ from django.conf import settings
 class GoogleLogin(SocialLoginView):
     authentication_classes = [] # disable authentication
     adapter_class = GoogleOAuth2Adapter
-    callback_url = "http://localhost:3000"
+    callback_url = "https://technime-dev.netlify.app"
     client_class = OAuth2Client
