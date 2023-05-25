@@ -13,7 +13,7 @@ class DBPopulate():
         self.their_airing_anime = set()
         self.update_characters_anime = set()
         self.inappropriate_ratings = ["Rx - Hentai", "R+ - Mild Nudity"]
-        self.inappropriate_genres = ["Ecchi", "Erotica", "Hentai"]
+        self.inappropriate_genres = ["Ecchi", "Erotica", "Hentai",]
         self.response = None
 
     def requestAPI(self, api_url):
@@ -43,7 +43,7 @@ class DBPopulate():
             # create a list of the names of the anime's genres
             genre_list = []
             for genre in anime_instance["genres"]:
-                if genre in self.inappropriate_genres:
+                if genre["name"] in self.inappropriate_genres:
                     print(f"not school appropriate: {my_anime_name}")
                     return
                 genre_list.append(genre["name"])
@@ -305,4 +305,4 @@ class DBPopulate():
 
 DBPopulate = DBPopulate()
 
-DBPopulate.initialPopulation(pages=1)
+DBPopulate.initialPopulation(pages=100)
