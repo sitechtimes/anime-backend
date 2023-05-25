@@ -42,6 +42,7 @@ class UserAnime(models.Model):
 
 class UserProfile(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    admin = models.BooleanField(default=False)
     created_date = models.DateField(null=True, blank=True)
     # grade = models.IntegerField()
     user_voted_animes = models.ManyToManyField("anime.AnimeAwards",  blank=True)
