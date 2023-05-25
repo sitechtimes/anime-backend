@@ -23,12 +23,14 @@ class CustomUser(AbstractUser):
     # grade = models.IntegerField()
     email = models.EmailField()
 
+
 class UserVotedAnime(models.Model):
     anime = models.CharField(max_length=255)
 
 
 class UserAnime(models.Model):
     anime = models.ForeignKey("anime.Anime", on_delete=models.CASCADE)
+
     # currently_watching = models.BooleanField()
     # watchlist = models.BooleanField()
     # finished_anime = models.BooleanField()
