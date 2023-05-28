@@ -1,3 +1,4 @@
+
 from anime.models import Anime, Genre, Studio, Character
 import requests
 from requests.exceptions import HTTPError
@@ -69,7 +70,7 @@ class DBPopulate():
                         case None:
                             my_time_of_year = ""
 
-                    if my_time_of_year is not "":
+                    if my_time_of_year != "":
                         my_season = f"{my_time_of_year} {my_from_date.year}"
 
             else:
@@ -304,6 +305,8 @@ class DBPopulate():
             my_anime.anime_characters.add(my_character)
 
 
-DBPopulate = DBPopulate()
 
-DBPopulate.initialPopulation(pages=300)
+   
+DBPopulate = DBPopulate()
+DBPopulate.initialPopulation(pages=5)
+
