@@ -23,7 +23,7 @@ class Studio(models.Model):
 class Awards(models.Model):
     award_name = models.CharField(max_length=255)
     # award_img = models.ImageField() #search for more parameters
-    date = models.DateField(null=True, blank=True)
+    # date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.award_name
@@ -75,6 +75,8 @@ class AnimeAwards(models.Model):
     award = models.ForeignKey(
         Awards, on_delete=models.CASCADE, blank=True, null=True)
     allUsers = models.ManyToManyField("users.UserProfile")
+    date = models.DateField(null=True, blank=True)
+    
 
     def __str__(self):
         return f"{self.anime.anime_name}, {self.award.award_name}"
@@ -86,6 +88,7 @@ class CharacterAwards(models.Model):
     award = models.ForeignKey(
         Awards, on_delete=models.CASCADE, blank=True, null=True)
     allUsers = models.ManyToManyField("users.UserProfile")
+    date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.character.character_name}, {self.award.award_name}"
@@ -100,12 +103,21 @@ class CharacterAwards(models.Model):
 
 class AllWinners(models.Model):
     winner = models.ForeignKey(AnimeAwards, on_delete=models.CASCADE)
+    date = models.DateField(null=True, blank=True)
+    season = models.CharField(max_length=255, null=True)
+    year = models.IntegerField(null=True)
+
 
     def __str__(self):
-        return f"{self.winner.anime.anime_name}, {self.winner.award.award_name}"
+        return f"{self.winner.anime.anime_name}, {self.winner.award.award_name}, {self.season}, {self.year}"
 
 class CharacterAwardsWinner(models.Model):
     character_winner = models.ForeignKey(CharacterAwards, on_delete=models.CASCADE)
+    date = models.DateField(null=True, blank=True)
+    season = models.CharField(max_length=255, null=True)
+    year = models.IntegerField(null=True)
+
+    
     
     def __str__(self):
-        return f"{self.character_winner.character.character_name}, {self.character_winner.award.award_name}"
+        return f"{self.character_winner.character.character_name}, {self.character_winner.award.award_name}, {self.season}, {self.year}"
