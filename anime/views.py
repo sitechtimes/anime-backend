@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from anime.models import Anime, Genre
+from anime.models import Anime, Genre, AllWinners, CharacterAwardsWinner, AnimeAwards
 from anime.serializers import AnimeSerializer, GenreSerializer
 from django.http import HttpResponse
 from django.views.generic import View
@@ -38,4 +38,15 @@ class  UpdateAnimeView(APIView):
 
         # Return response
         return HttpResponse("Executed!")
+    
+# class WinnersView(APIView):
+#     permission_classes = (permissions.AllowAny,)
+#     def get(self, request, format = None):
+#         animeWinners = AllWinners.objects.all()
+#         characterWinners = CharacterAwardsWinner.objects.all()
+#         animeWinnersSerializer = AnimeWinnersSerializer(animeWinners, many = True)
+#         characterWinnersSerializer = CharacterWinnersSerializer(characterWinners, many = True)
+#         allWinners = animeWinnersSerializer.data + characterWinnersSerializer.data
+        
+#         return Response(animeWinnersSerializer.data)
 

@@ -87,6 +87,17 @@ class CharacterNode(DjangoObjectType):
         filter_fields = "__all__"
         interfaces = (graphene.relay.Node,)
 
+# class CombWinners(graphene.Union):
+#     class Meta:
+#         types = (AllWinnersNode, CharacterAwardsWinnerNode)
+        
+#     def resolve_type(self, info):
+#         if isinstance(self, AllWinners):
+#             return AllWinnersNode
+#         elif isinstance(self, CharacterAwardsWinner):
+#             return CharacterAwardsWinnerNode
+#         else:
+#             raise Exception('Unknown type of winner')
 
 # class VoteNode(DjangoObjectType):
 #     class Meta:
@@ -124,6 +135,26 @@ class Query(object):
     all_characters = graphene.List(CharacterNode)
     
     sorted_currently_watching = graphene.List(AnimeNode)
+    
+    all_anime_winners = graphene.List(AllWinnersNode)
+    all_character_winners = graphene.List(CharacterAwardsWinnerNode)
+    
+    def resolve_all_anime_winners(root, info):
+        all_winners = AllWinners.objects.all()
+        return all_winners  
+    
+    def resolve_all_character_winners(root, info):
+        all_character_winners = CharacterAwardsWinner.objects.all()
+        return all_character_winners
+    
+    # comb_winners = graphene.List(CombWinners)
+    
+    def resolve_comb_winners(root, info):
+        all_winners = AllWinners.objects.all()
+        all_character_winners = CharacterAwardsWinner.objects.all()
+        return all_winners, all_character_winners
+    
+    
     # def resolve_winners(self, info):
     def resolve_all_characters(root, info):
         return Character.objects.all()
@@ -132,6 +163,11 @@ class Query(object):
         allAnimes = Anime.objects.all()
         sorted_anime = sorted(allAnimes, key=lambda x: x.currently_watching, reverse=True)
         return sorted_anime[:10]
+    
+    # def resolve_anime_and_character_winners(root, info):
+    #     all_winners = AllWinners.objects.all()
+    #     all_character_winners = CharacterAwardsWinner.objects.all()
+    #     return chain(all_winners, all_character_winners)
 
     # vote = graphene.relay.Node.Field(VoteNode)
     # all_vote = DjangoFilterConnectionField(VoteNode)

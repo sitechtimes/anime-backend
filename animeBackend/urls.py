@@ -20,7 +20,8 @@ urlpatterns = [
     path("graphql/", DRFAuthenticatedGraphQLView.as_view(graphiql=True)),
     path('anime/', AnimeView.as_view()),
     path("genres/", GenreView.as_view()),
-    path("updateAnime/", UpdateAnimeView.as_view())
+    path("updateAnime/", UpdateAnimeView.as_view()),
+    # path("winners/", WinnersView.as_view())
     # path('logout/', LogoutView.as_view()),
 
 ]
