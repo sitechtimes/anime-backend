@@ -18,6 +18,7 @@ djangorestframework-simplejwt = "^5.2.2"
 python-dotenv = "^0.21.0"
 dj-rest-auth = "2.2.5"
 snapshottest = "^0.6.0"
+chardet = "^5.1.0"
 
 [tool.poetry.dev-dependencies]
 
