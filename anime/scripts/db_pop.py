@@ -13,7 +13,7 @@ class DBPopulate():
         self.their_airing_anime = set()
         self.update_characters_anime = set()
         self.inappropriate_ratings = ["Rx - Hentai", "R+ - Mild Nudity"]
-        self.inappropriate_genres = ["Ecchi", "Erotica", "Hentai",]
+        self.inappropriate_genres = [ "Erotica", "Hentai",]
         self.response = None
 
     def requestAPI(self, api_url):
