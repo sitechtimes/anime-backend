@@ -75,6 +75,7 @@ class AnimeAwards(models.Model):
     award = models.ForeignKey(
         Awards, on_delete=models.CASCADE, blank=True, null=True)
     allUsers = models.ManyToManyField("users.UserProfile")
+    date = models.DateField(null=True, blank=True)
     
 
     def __str__(self):
@@ -87,6 +88,7 @@ class CharacterAwards(models.Model):
     award = models.ForeignKey(
         Awards, on_delete=models.CASCADE, blank=True, null=True)
     allUsers = models.ManyToManyField("users.UserProfile")
+    date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.character.character_name}, {self.award.award_name}"
