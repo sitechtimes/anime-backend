@@ -72,18 +72,18 @@ def create_user_customer(sender, instance, created, **kwargs):
             print(index)
             account = instance.email[index + 1:]
             print(account)
-            if account != ("nycstudents.net" or "schools.nyc.gov"):
-                user = User.objects.get(email = instance.email)
-                print(user)
-                print("wassup")
-                # user.remove()
-                return 
-            else:
+            # if account != ("nycstudents.net" or "schools.nyc.gov"):
+            #     user = User.objects.get(email = instance.email)
+            #     print(user)
+            #     print("wassup")
+            #     # user.remove()
+            #     return 
+            # else:
                 # date = date.today()
-                user = UserProfile.objects.get_or_create(user=instance, created_date = date)
-                print(user)
+            user = UserProfile.objects.get_or_create(user=instance, created_date = date)
+            print(user)
                 # user.created_date = date
-                user.save()
+            user.save()
                 # user.created_date = date
                 # user.save()
         except Exception:
