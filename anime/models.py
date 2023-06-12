@@ -76,10 +76,12 @@ class AnimeAwards(models.Model):
         Awards, on_delete=models.CASCADE, blank=True, null=True)
     allUsers = models.ManyToManyField("users.UserProfile")
     date = models.DateField(null=True, blank=True)
+    season = models.CharField(max_length=255, null=True)
+    year = models.IntegerField(null=True)
     
 
     def __str__(self):
-        return f"{self.anime.anime_name}, {self.award.award_name}"
+        return f"{self.anime.anime_name}, {self.award.award_name}, {self.season}, {self.year}"
     
 class CharacterAwards(models.Model):
     vote_count = models.IntegerField(default=0)
@@ -89,9 +91,11 @@ class CharacterAwards(models.Model):
         Awards, on_delete=models.CASCADE, blank=True, null=True)
     allUsers = models.ManyToManyField("users.UserProfile")
     date = models.DateField(null=True, blank=True)
+    season = models.CharField(max_length=255, null=True)
+    year = models.IntegerField(null=True)
 
     def __str__(self):
-        return f"{self.character.character_name}, {self.award.award_name}"
+        return f"{self.character.character_name}, {self.award.award_name}, {self.season}, {self.year}"
 
 
 

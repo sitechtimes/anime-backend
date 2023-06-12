@@ -18,6 +18,21 @@ import datetime
 today = date.today()
 month = date.today().month
 year = date.today().year
+season = ""
+
+match month:
+    case 1|2|3:
+        season = "Winter"
+    case 4|5|6:
+        season = "Spring"
+    case 7|8|9:
+        season = "Summer"
+    case 10|11|12:
+        season = "Fall"
+    case None:
+        season = ""
+
+
 
 
 
@@ -215,21 +230,21 @@ class addAnimeVote(graphene.Mutation):
         anime = addAnimeVote.get_anime(anime_data.anime_name)
         award = addAnimeVote.get_award(award_name)
         print(user, anime, award)
-        print("hi")
+        print("the year and season is:", year, season)
         try:
             try:
-                all_anime_awards = AnimeAwards.objects.filter(award__award_name = award_name)
+                all_anime_awards = AnimeAwards.objects.filter(award__award_name = award_name, season = season, year = year)
                 print(all_anime_awards)
                 user_exist = all_anime_awards.filter(allUsers = user)
                 print(user_exist)
                 if user_exist:
                     print("user already voted for this award")
-                    return GraphQLError("user already voted for this award")
+                    return GraphQLError(f"user already voted for this award {season} {year}")
                 
             except Exception:
                 print("there was an error ")
                 ["award1", "blue lock"]
-            anime_award = AnimeAwards.objects.get(anime__anime_name = anime_data.anime_name, award__award_name = award_name)
+            anime_award = AnimeAwards.objects.get(anime__anime_name = anime_data.anime_name, award__award_name = award_name, season = season, year = year)
             print("This is the award:", anime_award)
             if anime_award:
                 print("Anime exists")
@@ -248,7 +263,9 @@ class addAnimeVote(graphene.Mutation):
                 vote_count = 1,
                 anime = anime,
                 award = award,
-                date = today
+                # date = today
+                season = season,
+                year = year
             )
             # anime_award.allUsers.add(user)
             anime_award.save()
@@ -289,18 +306,18 @@ class addCharacterVote(graphene.Mutation):
         print("hi")
         try:
             try:
-                all_character_awards = CharacterAwards.objects.filter(award__award_name = award_name)
+                all_character_awards = CharacterAwards.objects.filter(award__award_name = award_name, season = season, year = year)
                 print(all_character_awards)
                 user_exist = all_character_awards.filter(allUsers = user)
                 print(user_exist)
                 if user_exist:
                     print("user already voted for this award")
-                    return GraphQLError("user already voted for this award")
+                    return GraphQLError(f"user already voted for this award {season} {year}")
                 
             except Exception:
                 print("there was an error ")
                 ["award1", "blue lock"]
-            character_award = CharacterAwards.objects.get(character__character_name = character_name, award__award_name = award_name)
+            character_award = CharacterAwards.objects.get(character__character_name = character_name, award__award_name = award_name, season = season, year = year)
             print("This is the award:", character_award)
             if character_award:
                 print("Character exists")
@@ -319,7 +336,9 @@ class addCharacterVote(graphene.Mutation):
                 vote_count = 1,
                 character = character,
                 award = award,
-                date = today
+                # date = today
+                season = season,
+                year = year
             )
             # anime_award.allUsers.add(user)
             character_award.save()
