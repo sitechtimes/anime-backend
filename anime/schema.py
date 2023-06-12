@@ -403,7 +403,7 @@ class winner(graphene.Mutation):
         for anime_award in anime_awards:
             try:
                 if "Character" in str(anime_award):
-                     all_character_awards = CharacterAwards.objects.filter(award__award_name = anime_award)
+                     all_character_awards = CharacterAwards.objects.filter(award__award_name = anime_award, season = season, year = year)
                      highest_vote_count = max(all_character_awards, key=lambda y: y.vote_count).vote_count
                     #  print(highest_vote_count)
                     
@@ -432,7 +432,7 @@ class winner(graphene.Mutation):
                         # print(anime_award, "character award")
                 else:
                     print(anime_award, "anime award")
-                    all_anime_awards = AnimeAwards.objects.filter(award__award_name = anime_award)
+                    all_anime_awards = AnimeAwards.objects.filter(award__award_name = anime_award, season = season, year = year)
                     highest_vote_count = max(all_anime_awards, key=lambda y: y.vote_count).vote_count
                     # print(highest_vote_count)
                     
