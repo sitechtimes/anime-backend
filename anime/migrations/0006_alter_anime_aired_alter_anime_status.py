@@ -13,11 +13,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='anime',
             name='status',
-            field=models.BooleanField(null=True),
+            field=models.DateField(null=True),
         ),
         migrations.AlterField(
             model_name='anime',
             name='aired',
-            field=models.DateField(null=True),
+            field=models.BooleanField(null=True),
         ),
     ]
